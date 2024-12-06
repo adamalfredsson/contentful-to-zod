@@ -43,7 +43,7 @@ function zodToString(schema: unknown, config: GeneratorConfig): string {
         })
         .join(",\n");
       result = `z.object({\n${fields}\n  })`;
-      if (schema._def.catchall?._def.typeName === "ZodUnknown") {
+      if (config.passthrough) {
         result += ".passthrough()";
       }
       break;

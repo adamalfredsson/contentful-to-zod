@@ -67,36 +67,23 @@ function getReferencedContentTypes(field: ContentfulField): string[] {
  */
 function createReferencedFieldSchema<TKey extends string>(
   contentType: TKey,
-  schema: z.ZodObject<z.ZodRawShape>,
-  config: GeneratorConfig
+  schema: z.ZodObject<z.ZodRawShape>
 ): z.ZodType {
-  return createZodObject(
-    {
-      sys: createZodObject(
-        {
-          id: z.string(),
-          type: z.string(),
-          linkType: z.string().optional(),
-          contentType: createZodObject(
-            {
-              sys: createZodObject(
-                {
-                  id: z.literal(contentType),
-                  linkType: z.literal("Entry"),
-                  type: z.literal("Link"),
-                },
-                config
-              ),
-            },
-            config
-          ),
-        },
-        config
-      ),
-      fields: augmentSchemaWithReference(schema, contentType),
-    },
-    config
-  );
+  return z.object({
+    sys: z.object({
+      id: z.string(),
+      type: z.string(),
+      linkType: z.string().optional(),
+      contentType: z.object({
+        sys: z.object({
+          id: z.literal(contentType),
+          linkType: z.literal("Entry"),
+          type: z.literal("Link"),
+        }),
+      }),
+    }),
+    fields: augmentSchemaWithReference(schema, contentType),
+  });
 }
 
 /**
@@ -107,8 +94,7 @@ function createReferencedFieldSchema<TKey extends string>(
  */
 function createContentTypeUnion<TKey extends string>(
   contentTypes: TKey[],
-  schemas: Record<TKey, z.ZodObject<z.ZodRawShape>>,
-  config: GeneratorConfig
+  schemas: Record<TKey, z.ZodObject<z.ZodRawShape>>
 ): z.ZodType {
   if (contentTypes.length < 2) {
     throw new Error(
@@ -116,7 +102,7 @@ function createContentTypeUnion<TKey extends string>(
     );
   }
   const unionSchemas = contentTypes.map((type) =>
-    createReferencedFieldSchema(type, schemas[type], config)
+    createReferencedFieldSchema(type, schemas[type])
   );
   return z.union([unionSchemas[0], unionSchemas[1], ...unionSchemas.slice(2)]);
 }
@@ -156,20 +142,14 @@ function getZodSchemaForFieldType(
       schema = locationSchema;
       break;
     case "asset":
-      schema = createZodObject(
-        {
-          sys: createZodObject(
-            {
-              type: z.literal("Link"),
-              linkType: z.literal("Asset"),
-              id: z.string(),
-            },
-            config
-          ),
-          fields: mediaSchema,
-        },
-        config
-      );
+      schema = z.object({
+        sys: z.object({
+          type: z.literal("Link"),
+          linkType: z.literal("Asset"),
+          id: z.string(),
+        }),
+        fields: mediaSchema,
+      });
       break;
     default:
       if (fieldType.startsWith("array:")) {
@@ -177,32 +157,23 @@ function getZodSchemaForFieldType(
         if (itemType === "entry") {
           const contentTypes = getReferencedContentTypes(field);
           if (contentTypes.length > 1) {
-            schema = z.array(
-              createContentTypeUnion(contentTypes, schemas, config)
-            );
+            schema = z.array(createContentTypeUnion(contentTypes, schemas));
           } else if (contentTypes.length === 1) {
             schema = z.array(
               createReferencedFieldSchema(
                 contentTypes[0],
-                schemas[contentTypes[0]],
-                config
+                schemas[contentTypes[0]]
               )
             );
           } else {
             schema = z.array(
-              createZodObject(
-                {
-                  sys: createZodObject(
-                    {
-                      type: z.literal("Link"),
-                      linkType: z.literal("Entry"),
-                      id: z.string(),
-                    },
-                    config
-                  ),
-                },
-                config
-              )
+              z.object({
+                sys: z.object({
+                  type: z.literal("Link"),
+                  linkType: z.literal("Entry"),
+                  id: z.string(),
+                }),
+              })
             );
           }
         } else if (field.items) {
@@ -232,24 +203,17 @@ function getZodSchemaForFieldType(
             contentTypes.length === 1
               ? createReferencedFieldSchema(
                   contentTypes[0],
-                  schemas[contentTypes[0]],
-                  config
+                  schemas[contentTypes[0]]
                 )
-              : createContentTypeUnion(contentTypes, schemas, config);
+              : createContentTypeUnion(contentTypes, schemas);
         } else {
-          schema = createZodObject(
-            {
-              sys: createZodObject(
-                {
-                  type: z.literal("Link"),
-                  linkType: z.literal("Entry"),
-                  id: z.string(),
-                },
-                config
-              ),
-            },
-            config
-          );
+          schema = z.object({
+            sys: z.object({
+              type: z.literal("Link"),
+              linkType: z.literal("Entry"),
+              id: z.string(),
+            }),
+          });
         }
       } else {
         if (!config.allowUnknown) {
@@ -265,20 +229,6 @@ function getZodSchemaForFieldType(
   }
 
   return schema;
-}
-
-/**
- * Creates a Zod object schema with the specified shape
- * @param shape - Record of field names to their Zod schemas
- * @param config - Generator configuration options
- * @returns A Zod object schema
- */
-function createZodObject(
-  shape: Record<string, z.ZodType>,
-  config: GeneratorConfig
-): z.ZodObject<z.ZodRawShape> {
-  const baseObject = z.object(shape);
-  return config.passthrough ? baseObject.passthrough() : baseObject.strict();
 }
 
 /**
@@ -368,7 +318,7 @@ function generateZodSchema(
     shape[field.id] = getZodSchemaForFieldType(field, config, schemas);
   }
 
-  return createZodObject(shape, config);
+  return z.object(shape);
 }
 
 /**
