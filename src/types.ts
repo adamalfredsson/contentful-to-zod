@@ -70,6 +70,12 @@ export interface GeneratorOptions {
    * @default false
    */
   passthrough?: boolean;
+
+  /**
+   * Whether to use z.unknown() for unsupported types instead of throwing an error
+   * @default false
+   */
+  allowUnknown?: boolean;
 }
 
 export type GeneratorConfig = Required<GeneratorOptions>;

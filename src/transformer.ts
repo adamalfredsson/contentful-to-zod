@@ -5,6 +5,11 @@ import {
   GeneratorConfig,
 } from "./types";
 
+/**
+ * Determines the field type string based on Contentful field configuration
+ * @param field - Contentful field configuration containing type information
+ * @returns A string representing the field type
+ */
 function getFieldType(
   field: Pick<ContentfulField, "type" | "linkType" | "items">
 ): string {
@@ -32,22 +37,85 @@ function getFieldType(
   return field.type.toLowerCase();
 }
 
-function getReferencedContentType(field: ContentfulField): string | undefined {
-  if (field.validations?.[0]?.linkContentType?.[0]) {
-    return field.validations[0].linkContentType[0];
+/**
+ * Extracts the referenced content types from a Contentful field's validations
+ * @param field - Contentful field configuration
+ * @returns The IDs of the referenced content types, if any
+ */
+function getReferencedContentTypes(field: ContentfulField): string[] {
+  const contentTypes: string[] = [];
+
+  if (field.validations?.[0]?.linkContentType) {
+    contentTypes.push(...field.validations[0].linkContentType);
   }
-  if (field.items?.validations?.[0]?.linkContentType?.[0]) {
-    return field.items.validations[0].linkContentType[0];
+  if (field.items?.validations?.[0]?.linkContentType) {
+    contentTypes.push(...field.items.validations[0].linkContentType);
   }
-  return undefined;
+
+  return contentTypes;
 }
 
+/**
+ * Creates a Zod schema for a referenced content type field
+ * @param contentType - Content type ID
+ * @param schema - Zod schema for the content type
+ * @returns A Zod schema for the referenced field
+ */
+function createReferencedFieldSchema<TKey extends string>(
+  contentType: TKey,
+  schema: z.ZodObject<z.ZodRawShape>
+): z.ZodType {
+  return z.object({
+    sys: z.object({
+      id: z.string(),
+      type: z.string(),
+      linkType: z.string().optional(),
+      contentType: z.object({
+        sys: z.object({
+          id: z.literal(contentType),
+          linkType: z.literal("Entry"),
+          type: z.literal("Link"),
+        }),
+      }),
+    }),
+    fields: schema,
+  });
+}
+
+/**
+ * Creates a union schema for content type references
+ * @param contentTypes - Array of content type IDs
+ * @param schemas - Record of already generated Zod schemas
+ * @returns A Zod union schema
+ */
+function createContentTypeUnion<TKey extends string>(
+  contentTypes: TKey[],
+  schemas: Record<TKey, z.ZodObject<z.ZodRawShape>>
+): z.ZodType {
+  if (contentTypes.length < 2) {
+    throw new Error(
+      "Cannot create union schema with less than 2 content types"
+    );
+  }
+  const unionSchemas = contentTypes.map((type) =>
+    createReferencedFieldSchema(type, schemas[type])
+  );
+  return z.union([unionSchemas[0], unionSchemas[1], ...unionSchemas.slice(2)]);
+}
+
+/**
+ * Generates a Zod schema for a specific Contentful field type
+ * @param field - Contentful field configuration
+ * @param config - Generator configuration options
+ * @param schemas - Record of already generated Zod schemas
+ * @returns A Zod schema corresponding to the field type
+ */
 function getZodSchemaForFieldType(
   field: ContentfulField,
   config: GeneratorConfig,
-  schemas: Record<string, z.ZodObject<any>>
-): z.ZodType<any> {
-  let schema: z.ZodType<any>;
+  schemas: Record<string, z.ZodObject<z.ZodRawShape>>
+): z.ZodType {
+  let schema: z.ZodType;
   const fieldType = getFieldType(field);
 
   switch (fieldType) {
@@ -65,9 +133,9 @@ function getZodSchemaForFieldType(
       break;
     case "richText":
       schema = z.object({
-        nodeType: z.string(),
-        content: z.array(z.any()),
-        data: z.record(z.any()).optional(),
+        nodeType: z.literal("document"),
+        content: z.array(z.unknown()),
+        data: z.record(z.unknown()).optional(),
       });
       break;
     case "location":
@@ -89,9 +157,16 @@ function getZodSchemaForFieldType(
       if (fieldType.startsWith("array:")) {
         const itemType = fieldType.split(":")[1];
         if (itemType === "entry") {
-          const contentType = getReferencedContentType(field);
-          if (contentType && schemas[contentType]) {
-            schema = z.array(schemas[contentType]);
+          const contentTypes = getReferencedContentTypes(field);
+          if (contentTypes.length > 1) {
+            schema = z.array(createContentTypeUnion(contentTypes, schemas));
+          } else if (contentTypes.length === 1) {
+            schema = z.array(
+              createReferencedFieldSchema(
+                contentTypes[0],
+                schemas[contentTypes[0]]
+              )
+            );
           } else {
             schema = z.array(
               z.object({
@@ -104,24 +179,32 @@ function getZodSchemaForFieldType(
             );
           }
         } else if (field.items) {
-          schema = z.array(
-            getZodSchemaForFieldType(
-              {
-                ...field.items,
-                id: `${field.id}Item`,
-                name: `${field.name}Item`,
-              },
-              config,
-              schemas
-            )
+          const itemSchema = getZodSchemaForFieldType(
+            {
+              ...field.items,
+              id: `${field.id}Item`,
+              name: `${field.name}Item`,
+            },
+            config,
+            schemas
           );
+          schema = z.array(itemSchema);
         } else {
-          schema = z.array(z.any());
+          throw new Error("Unknown array field");
         }
       } else if (fieldType === "entry") {
-        const contentType = getReferencedContentType(field);
-        if (contentType && schemas[contentType]) {
-          schema = schemas[contentType];
+        const contentTypes = getReferencedContentTypes(field);
+        if (
+          contentTypes.length > 0 &&
+          contentTypes.every((type) => schemas[type])
+        ) {
+          schema =
+            contentTypes.length === 1
+              ? createReferencedFieldSchema(
+                  contentTypes[0],
+                  schemas[contentTypes[0]]
+                )
+              : createContentTypeUnion(contentTypes, schemas);
         } else {
           schema = z.object({
             sys: z.object({
@@ -132,7 +215,10 @@ function getZodSchemaForFieldType(
           });
         }
       } else {
-        schema = z.any();
+        if (!config.allowUnknown) {
+          throw new Error(`Unsupported field type: ${fieldType}`);
+        }
+        schema = z.unknown();
       }
       break;
   }
@@ -144,25 +230,41 @@ function getZodSchemaForFieldType(
   return schema;
 }
 
+/**
+ * Creates a Zod object schema with the specified shape
+ * @param shape - Record of field names to their Zod schemas
+ * @param config - Generator configuration options
+ * @returns A Zod object schema
+ */
 function createZodObject(
-  shape: Record<string, z.ZodType<any>>,
+  shape: Record<string, z.ZodType>,
   config: GeneratorConfig
-): z.ZodObject<any> {
+): z.ZodObject<z.ZodRawShape> {
   const baseObject = z.object(shape);
   return config.passthrough ? baseObject.passthrough() : baseObject.strict();
 }
 
+/**
+ * Gets the content type dependencies for a given content type
+ * @param contentType - Contentful content type configuration
+ * @returns Array of content type IDs that this content type depends on
+ */
 function getDependencies(contentType: ContentfulContentType): string[] {
   const dependencies: string[] = [];
   for (const field of contentType.fields) {
-    const contentTypeId = getReferencedContentType(field);
-    if (contentTypeId) {
-      dependencies.push(contentTypeId);
+    const contentTypeId = getReferencedContentTypes(field);
+    if (contentTypeId.length > 0) {
+      dependencies.push(...contentTypeId);
     }
   }
   return dependencies;
 }
 
+/**
+ * Sorts content types based on their dependencies
+ * @param contentTypes - Array of Contentful content types
+ * @returns Sorted array of content types where dependencies come before dependents
+ */
 function sortContentTypes(
   contentTypes: ContentfulContentType[]
 ): ContentfulContentType[] {
@@ -211,12 +313,19 @@ function sortContentTypes(
   return sorted;
 }
 
-export function generateZodSchema(
+/**
+ * Generates a Zod schema for a single content type
+ * @param contentType - Contentful content type configuration
+ * @param config - Generator configuration options
+ * @param schemas - Record of already generated Zod schemas
+ * @returns A Zod object schema for the content type
+ */
+function generateZodSchema(
   contentType: ContentfulContentType,
   config: GeneratorConfig,
-  schemas: Record<string, z.ZodObject<any>>
-) {
-  const shape: Record<string, z.ZodType<any>> = {};
+  schemas: Record<string, z.ZodObject<z.ZodRawShape>>
+): z.ZodObject<z.ZodRawShape> {
+  const shape: Record<string, z.ZodType> = {};
 
   for (const field of contentType.fields) {
     shape[field.id] = getZodSchemaForFieldType(field, config, schemas);
@@ -225,15 +334,21 @@ export function generateZodSchema(
   return createZodObject(shape, config);
 }
 
+/**
+ * Generates Zod schemas for all content types
+ * @param contentTypes - Array of Contentful content types
+ * @param config - Generator configuration options
+ * @returns Record of content type IDs to their generated Zod schemas
+ */
 export function generateAllZodSchemas(
   contentTypes: ContentfulContentType[],
   config: GeneratorConfig
-) {
+): Record<string, z.ZodObject<z.ZodRawShape>> {
   // Sort content types based on dependencies
   const sortedContentTypes = sortContentTypes(contentTypes);
 
   // Generate schemas in dependency order
-  const schemas: Record<string, z.ZodObject<any>> = {};
+  const schemas: Record<string, z.ZodObject<z.ZodRawShape>> = {};
   for (const contentType of sortedContentTypes) {
     schemas[contentType.sys.id] = generateZodSchema(
       contentType,

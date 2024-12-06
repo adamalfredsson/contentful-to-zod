@@ -2,68 +2,66 @@
 
 import { Command } from "commander";
 import fs from "fs";
+import { z } from "zod";
 import { generateAllZodSchemas } from "./transformer";
 import type {
   ContentfulSchema,
   GeneratorConfig,
   GeneratorOptions,
 } from "./types";
+import { toPascalCase } from "./utils/string";
 
-function toPascalCase(str: string): string {
-  // Split on common delimiters and camelCase boundaries
-  const words = str
-    .replace(/([a-z])([A-Z])/g, "$1 $2") // split camelCase
-    .split(/[-_\s]+/);
-
-  // Special case for common abbreviations
-  const commonAbbreviations = ["seo", "cta", "url", "id"];
-
-  return words
-    .map((word) => {
-      const lower = word.toLowerCase();
-      if (commonAbbreviations.includes(lower)) {
-        return lower.toUpperCase();
-      }
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    })
-    .join("");
-}
-
-function zodToString(schema: any): string {
-  if (!schema._def) return "z.any()";
+/**
+ * Converts a Zod schema to its string representation for code generation
+ * @param schema - The Zod schema to convert
+ * @param useUnknownInsteadOfThrow - Whether to use z.unknown() for unsupported types instead of throwing an error
+ * @returns A string representation of the schema that can be used in generated code
+ */
+function zodToString(schema: unknown, config: GeneratorConfig): string {
+  if (!(schema instanceof z.ZodType)) return "z.unknown()";
 
   let result = "";
   switch (schema._def.typeName) {
     case "ZodObject": {
       const shape = schema._def.shape();
       const fields = Object.entries(shape)
-        .map(([key, value]) => `    ${key}: ${zodToString(value)}`)
+        .map(([key, value]) => {
+          return `    ${key}: ${zodToString(value, config)}`;
+        })
         .join(",\n");
       result = `z.object({\n${fields}\n  })`;
-      if (schema._def.catchall?._def.typeName === "ZodAny") {
+      if (schema._def.catchall?._def.typeName === "ZodUnknown") {
         result += ".passthrough()";
       }
       break;
     }
 
     case "ZodArray":
-      result = `z.array(${zodToString(schema._def.type)})`;
+      result = `z.array(${zodToString(schema._def.type, config)})`;
       break;
 
     case "ZodOptional":
-      result = `${zodToString(schema._def.innerType)}.optional()`;
+      result = `${zodToString(schema._def.innerType, config)}.optional()`;
       break;
 
     case "ZodString":
       result = "z.string()";
-      if (schema._def.checks?.some((check: any) => check.kind === "datetime")) {
+      if (
+        schema._def.checks?.some(
+          (check: z.ZodStringCheck) => check.kind === "datetime"
+        )
+      ) {
         result += ".datetime()";
       }
       break;
 
     case "ZodNumber":
       result = "z.number()";
-      if (schema._def.checks?.some((check: any) => check.kind === "int")) {
+      if (
+        schema._def.checks?.some(
+          (check: z.ZodNumberCheck) => check.kind === "int"
+        )
+      ) {
         result += ".int()";
       }
       break;
@@ -77,36 +75,46 @@ function zodToString(schema: any): string {
       break;
 
     case "ZodRecord":
-      result = `z.record(${zodToString(schema._def.valueType)})`;
+      result = `z.record(${zodToString(schema._def.valueType, config)})`;
       break;
 
-    case "ZodAny":
-      result = "z.any()";
+    case "ZodUnknown":
+      result = "z.unknown()";
+      break;
+
+    case "ZodUnion":
+      result = `z.union([${schema._def.options
+        .map((option: z.ZodType) => zodToString(option, config))
+        .join(", ")}])`;
       break;
 
     default:
-      result = "z.any()";
+      if (config.allowUnknown) {
+        return "z.unknown()";
+      }
+      throw new Error(`Unsupported Zod type: ${schema._def.typeName}`);
   }
 
   return result;
 }
 
+/**
+ * Generates a TypeScript file containing Zod schema definitions and their types
+ * @param schemas - Record of schema names to their Zod schema objects
+ * @param config - Generator configuration options
+ */
 function generateTypeScriptFile(
-  schemas: Record<string, any>,
+  schemas: Record<string, z.ZodType>,
   config: GeneratorConfig
-) {
+): void {
   const imports = `import { z } from "zod";\n\n`;
 
   const schemaDefinitions = Object.entries(schemas)
-    .map(([name, schema]) => {
-      const pascalName = toPascalCase(name);
-      const schemaString = zodToString(schema);
-
-      return (
-        `export const ${name}Schema = ${schemaString};\n\n` +
-        `export type ${pascalName} = z.infer<typeof ${name}Schema>;\n`
-      );
-    })
+    .map(
+      ([name, schema]) =>
+        `export const ${name}Schema = ${zodToString(schema, config)};\n\n` +
+        `export type ${toPascalCase(name)} = z.infer<typeof ${name}Schema>;\n`
+    )
     .join("\n");
 
   const content = imports + schemaDefinitions;
@@ -114,15 +122,25 @@ function generateTypeScriptFile(
   fs.writeFileSync(config.output, content, "utf-8");
 }
 
+/**
+ * Creates a default configuration by merging user options with defaults
+ * @param options - User-provided generator options
+ * @returns Complete generator configuration
+ */
 function getDefaultConfig(options: GeneratorOptions): GeneratorConfig {
   return {
     input: options.input,
     output: options.output,
     passthrough: options.passthrough ?? false,
+    allowUnknown: options.allowUnknown ?? false,
   };
 }
 
-function main() {
+/**
+ * Main entry point for the CLI application
+ * Parses command line arguments and generates Zod schemas from Contentful content types
+ */
+function main(): void {
   const program = new Command()
     .name("contentful-to-zod")
     .description("Generate Zod schemas from Contentful content types")
@@ -135,6 +153,11 @@ function main() {
       "Path where the generated TypeScript file should be written"
     )
     .option("--passthrough", "Allow unknown keys in objects", false)
+    .option(
+      "-a, --allow-unknown",
+      "Use z.unknown() for unsupported types instead of throwing an error",
+      false
+    )
     .version("1.0.0");
 
   program.parse();
@@ -154,7 +177,10 @@ function main() {
 
     console.log(`Successfully generated Zod schemas at ${config.output}`);
   } catch (error) {
-    console.error("Error generating schemas:", error);
+    console.error(
+      "Error generating schemas:",
+      error instanceof Error ? error.message : String(error)
+    );
     process.exit(1);
   }
 }
