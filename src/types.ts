@@ -76,6 +76,12 @@ export interface GeneratorOptions {
    * @default false
    */
   allowUnknown?: boolean;
+
+  /**
+   * Whether to generate flat schemas
+   * @default false
+   */
+  flat?: boolean;
 }
 
 export type GeneratorConfig = Required<GeneratorOptions>;

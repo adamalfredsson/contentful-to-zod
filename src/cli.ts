@@ -3,13 +3,19 @@
 import { Command } from "commander";
 import fs from "fs";
 import { z } from "zod";
-import { generateAllZodSchemas } from "./transformer";
+import { generateAllZodSchemas, ZodTypeWithReference } from "./transformer";
 import type {
   ContentfulSchema,
   GeneratorConfig,
   GeneratorOptions,
 } from "./types";
 import { toPascalCase } from "./utils/string";
+
+function isZodTypeWithReference(
+  schema: z.ZodType
+): schema is ZodTypeWithReference {
+  return "_reference" in schema;
+}
 
 /**
  * Converts a Zod schema to its string representation for code generation
@@ -19,6 +25,10 @@ import { toPascalCase } from "./utils/string";
  */
 function zodToString(schema: unknown, config: GeneratorConfig): string {
   if (!(schema instanceof z.ZodType)) return "z.unknown()";
+
+  if (!config.flat && isZodTypeWithReference(schema)) {
+    return `${createSchemaName(schema._reference)}`;
+  }
 
   let result = "";
   switch (schema._def.typeName) {
@@ -112,14 +122,18 @@ function generateTypeScriptFile(
   const schemaDefinitions = Object.entries(schemas)
     .map(
       ([name, schema]) =>
-        `export const ${name}Schema = ${zodToString(schema, config)};\n\n` +
-        `export type ${toPascalCase(name)} = z.infer<typeof ${name}Schema>;\n`
+        `export const ${createSchemaName(name)} = ${zodToString(schema, config)};\n\n` +
+        `export type ${toPascalCase(name)} = z.infer<typeof ${createSchemaName(name)}>;\n`
     )
     .join("\n");
 
   const content = imports + schemaDefinitions;
 
   fs.writeFileSync(config.output, content, "utf-8");
+}
+
+function createSchemaName(contentTypeId: string): string {
+  return `${contentTypeId}Schema`;
 }
 
 /**
@@ -133,6 +147,7 @@ function getDefaultConfig(options: GeneratorOptions): GeneratorConfig {
     output: options.output,
     passthrough: options.passthrough ?? false,
     allowUnknown: options.allowUnknown ?? false,
+    flat: options.flat ?? false,
   };
 }
 
@@ -156,6 +171,11 @@ function main(): void {
     .option(
       "-a, --allow-unknown",
       "Use z.unknown() for unsupported types instead of throwing an error",
+      false
+    )
+    .option(
+      "-f, --flat",
+      "Generate flat Zod schemas without references to other schemas",
       false
     )
     .version("1.0.0");

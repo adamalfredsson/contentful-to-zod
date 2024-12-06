@@ -4,6 +4,7 @@ import {
   ContentfulField,
   GeneratorConfig,
 } from "./types";
+import { copyWithMetadata } from "./utils/object";
 
 /**
  * Determines the field type string based on Contentful field configuration
@@ -78,9 +79,15 @@ function createReferencedFieldSchema<TKey extends string>(
         }),
       }),
     }),
-    fields: schema,
+    fields: copyWithMetadata(schema, {
+      _reference: contentType,
+    }),
   });
 }
+
+export type ZodTypeWithReference = z.ZodObject<z.ZodRawShape> & {
+  _reference: string;
+};
 
 /**
  * Creates a union schema for content type references
