@@ -15,6 +15,14 @@ import type {
 } from "./types.js";
 import { unique } from "./utils/array.js";
 import { toPascalCase } from "./utils/string.js";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { createRequire } from "module";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const require = createRequire(import.meta.url);
+const { version } = require(join(__dirname, "../package.json"));
 
 /**
  * Converts a Zod schema to its string representation for code generation
@@ -242,7 +250,7 @@ function main(): void {
       "Generate flat Zod schemas without references to other schemas",
       false
     )
-    .version("1.0.0");
+    .version(version);
 
   program.parse();
 
