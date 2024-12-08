@@ -70,19 +70,7 @@ function createReferencedFieldSchema<TKey extends string>(
   contentType: TKey,
   schema: z.ZodObject<z.ZodRawShape>
 ): z.ZodType {
-  return augmentSchemaWithReference(
-    z.object({
-      sys: z.object({
-        contentType: z.object({
-          sys: z.object({
-            id: z.literal(contentType),
-          }),
-        }),
-      }),
-      fields: schema,
-    }),
-    contentType
-  );
+  return augmentSchemaWithReference(schema, contentType);
 }
 
 /**
@@ -318,7 +306,9 @@ function generateZodSchema(
 
   return z.object({
     sys: z.object({
-      contentType: z.object({ id: z.literal(contentType.sys.id) }),
+      contentType: z.object({
+        sys: z.object({ id: z.literal(contentType.sys.id) }),
+      }),
     }),
     fields: z.object(shape),
   });
