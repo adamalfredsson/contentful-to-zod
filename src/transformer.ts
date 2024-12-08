@@ -318,7 +318,9 @@ function generateZodSchema(
 
   return z.object({
     sys: z.object({
-      contentType: z.object({ id: z.literal(contentType.sys.id) }),
+      contentType: z.object({
+        sys: z.object({ id: z.literal(contentType.sys.id) }),
+      }),
     }),
     fields: z.object(shape),
   });
