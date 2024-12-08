@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { augmentSchemaWithInternalReference } from "../augments/internal";
+import { augmentSchemaWithInternalReference } from "../augments/internal.js";
 
 const markSchema = z.object({
   type: z.string(),

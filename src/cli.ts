@@ -3,17 +3,17 @@
 import { Command } from "commander";
 import fs from "fs";
 import { z } from "zod";
-import { isZodSchemaWithInternalReference } from "./augments/internal";
-import { isZodSchemaWithReference } from "./augments/reference";
-import { internalSchemas } from "./schemas";
-import { generateAllZodSchemas } from "./transformer";
+import { isZodSchemaWithInternalReference } from "./augments/internal.js";
+import { isZodSchemaWithReference } from "./augments/reference.js";
+import { internalSchemas } from "./schemas/index.js";
+import { generateAllZodSchemas } from "./transformer.js";
 import type {
   ContentfulSchema,
   GeneratorConfig,
   GeneratorOptions,
-} from "./types";
-import { unique } from "./utils/array";
-import { toPascalCase } from "./utils/string";
+} from "./types.js";
+import { unique } from "./utils/array.js";
+import { toPascalCase } from "./utils/string.js";
 
 /**
  * Converts a Zod schema to its string representation for code generation

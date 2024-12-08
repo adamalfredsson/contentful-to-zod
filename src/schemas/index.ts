@@ -1,5 +1,5 @@
-import { locationSchema } from "./location";
-import { mediaSchema } from "./media";
-import { richTextSchema } from "./rich-text";
+import { locationSchema } from "./location.js";
+import { mediaSchema } from "./media.js";
+import { richTextSchema } from "./rich-text.js";
 
 export const internalSchemas = [locationSchema, mediaSchema, richTextSchema];

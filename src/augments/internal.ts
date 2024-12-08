@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { copyWithMetadata } from "../utils/object";
+import { copyWithMetadata } from "../utils/object.js";
 
 export function augmentSchemaWithInternalReference(
   schema: z.ZodObject<z.ZodRawShape>,

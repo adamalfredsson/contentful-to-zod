@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { augmentSchemaWithReference } from "./augments/reference";
-import { locationSchema } from "./schemas/location";
-import { mediaSchema } from "./schemas/media";
-import { richTextSchema } from "./schemas/rich-text";
+import { augmentSchemaWithReference } from "./augments/reference.js";
+import { locationSchema } from "./schemas/location.js";
+import { mediaSchema } from "./schemas/media.js";
+import { richTextSchema } from "./schemas/rich-text.js";
 import {
   ContentfulContentType,
   ContentfulField,
   GeneratorConfig,
-} from "./types";
+} from "./types.js";
 
 /**
  * Determines the field type string based on Contentful field configuration
