@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
+    "dev": "tsx watch src/cli.ts",
     "start": "node dist/cli.js",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -38,9 +38,11 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@contentful/rich-text-types": "^17.0.0",
     "@types/node": "^22.10.1",
     "prettier": "^3.4.2",
     "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
     "typescript": "5.7.2"
   }
 }

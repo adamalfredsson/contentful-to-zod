@@ -8,5 +8,5 @@ const _locationSchema = z.object({
 
 export const locationSchema = augmentSchemaWithInternalReference(
   _locationSchema,
-  "contentfulLocation"
+  { reference: "contentfulLocation" }
 );

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { isZodSchemaWithInternalReference } from "./augments/internal.js";
 import { isZodSchemaWithReference } from "./augments/reference.js";
 import { internalSchemas } from "./schemas/index.js";
+import { richTextSchema } from "./schemas/rich-text.js";
 import { generateAllZodSchemas } from "./transformer.js";
 import type {
   ContentfulSchema,
@@ -111,7 +112,7 @@ function zodToString(schema: unknown, config: GeneratorConfig): string {
   return result;
 }
 
-function findInternalDefinitions(schema: unknown): string[] {
+function findInternalReferences(schema: unknown): string[] {
   if (!(schema instanceof z.ZodType)) {
     return [];
   }
@@ -122,19 +123,17 @@ function findInternalDefinitions(schema: unknown): string[] {
 
   switch (schema._def.typeName) {
     case "ZodObject": {
-      return Object.values(schema._def.shape()).flatMap(
-        findInternalDefinitions
-      );
+      return Object.values(schema._def.shape()).flatMap(findInternalReferences);
     }
 
     case "ZodArray":
-      return findInternalDefinitions(schema._def.type);
+      return findInternalReferences(schema._def.type);
 
     case "ZodOptional":
-      return findInternalDefinitions(schema._def.innerType);
+      return findInternalReferences(schema._def.innerType);
 
     case "ZodUnion":
-      return schema._def.options.flatMap(findInternalDefinitions);
+      return schema._def.options.flatMap(findInternalReferences);
 
     default:
       return [];
@@ -150,11 +149,18 @@ function generateTypeScriptFile(
   schemas: Record<string, z.ZodType>,
   config: GeneratorConfig
 ): void {
-  const imports = `import { z } from "zod";`;
+  const internalReferences = unique(
+    Object.values(schemas).flatMap(findInternalReferences)
+  );
 
-  const internalDefinitions = unique(
-    Object.values(schemas).flatMap(findInternalDefinitions)
-  )
+  const imports = [
+    `import { z } from "zod";`,
+    ...(internalReferences.includes(richTextSchema._reference)
+      ? ["import type { Document } from '@contentful/rich-text-types';"]
+      : []),
+  ].join("\n");
+
+  const internalDefinitions = internalReferences
     .map((reference) => {
       const schema = internalSchemas.find(
         (schema) => schema._reference === reference
@@ -168,7 +174,7 @@ function generateTypeScriptFile(
         `export const ${createSchemaName(reference)} = ${zodToString(schema, {
           ...config,
           flat: true,
-        })};`,
+        })}${schema._typeCast ? ` as z.ZodType<${schema._typeCast}>` : ""};`,
         `export type ${toPascalCase(reference)} = z.infer<typeof ${createSchemaName(reference)}>;`,
       ].join("\n\n");
     })

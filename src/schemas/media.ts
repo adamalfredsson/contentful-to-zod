@@ -24,9 +24,8 @@ const _mediaSchema = z.object({
   file: fileSchema,
 });
 
-export const mediaSchema = augmentSchemaWithInternalReference(
-  _mediaSchema,
-  "contentfulMedia"
-);
+export const mediaSchema = augmentSchemaWithInternalReference(_mediaSchema, {
+  reference: "contentfulMedia",
+});
 
 export type Media = z.infer<typeof mediaSchema>;

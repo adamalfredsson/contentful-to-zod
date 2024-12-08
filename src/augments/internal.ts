@@ -2,10 +2,14 @@ import { z } from "zod";
 import { copyWithMetadata } from "../utils/object.js";
 
 export function augmentSchemaWithInternalReference(
-  schema: z.ZodObject<z.ZodRawShape>,
-  reference: string
+  schema: z.ZodType,
+  { reference, typeCast }: { reference: string; typeCast?: string }
 ) {
-  return copyWithMetadata(schema, { _reference: reference, _internal: true });
+  return copyWithMetadata(schema, {
+    _reference: reference,
+    _typeCast: typeCast,
+    _internal: true,
+  });
 }
 
 export type ZodSchemaWithInternalReference = ReturnType<

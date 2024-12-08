@@ -1,27 +1,7 @@
+import type { Document } from "@contentful/rich-text-types";
 import { z } from "zod";
 
-export const contentfulRichTextSchema = z.object({
-  data: z.record(z.unknown()),
-  content: z.array(
-    z.object({
-      data: z.record(z.unknown()),
-      content: z.array(
-        z.object({
-          data: z.record(z.unknown()),
-          marks: z.array(
-            z.object({
-              type: z.string(),
-            })
-          ),
-          value: z.string(),
-          nodeType: z.literal("text"),
-        })
-      ),
-      nodeType: z.literal("paragraph"),
-    })
-  ),
-  nodeType: z.literal("document"),
-});
+export const contentfulRichTextSchema = z.unknown() as z.ZodType<Document>;
 
 export type ContentfulRichText = z.infer<typeof contentfulRichTextSchema>;
 
