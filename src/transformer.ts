@@ -69,21 +69,19 @@ function createReferencedFieldSchema<TKey extends string>(
   contentType: TKey,
   schema: z.ZodObject<z.ZodRawShape>
 ): z.ZodType {
-  return z.object({
-    sys: z.object({
-      id: z.string(),
-      type: z.string(),
-      linkType: z.string().optional(),
-      contentType: z.object({
-        sys: z.object({
-          id: z.literal(contentType),
-          linkType: z.literal("Entry"),
-          type: z.literal("Link"),
+  return augmentSchemaWithReference(
+    z.object({
+      sys: z.object({
+        contentType: z.object({
+          sys: z.object({
+            id: z.literal(contentType),
+          }),
         }),
       }),
+      fields: schema,
     }),
-    fields: augmentSchemaWithReference(schema, contentType),
-  });
+    contentType
+  );
 }
 
 /**
@@ -156,14 +154,14 @@ function getZodSchemaForFieldType(
         const itemType = fieldType.split(":")[1];
         if (itemType === "entry") {
           const contentTypes = getReferencedContentTypes(field);
-          if (contentTypes.length > 1) {
-            schema = z.array(createContentTypeUnion(contentTypes, schemas));
-          } else if (contentTypes.length === 1) {
+          if (contentTypes.length > 0) {
             schema = z.array(
-              createReferencedFieldSchema(
-                contentTypes[0],
-                schemas[contentTypes[0]]
-              )
+              contentTypes.length === 1
+                ? createReferencedFieldSchema(
+                    contentTypes[0],
+                    schemas[contentTypes[0]]
+                  )
+                : createContentTypeUnion(contentTypes, schemas)
             );
           } else {
             schema = z.array(
@@ -195,10 +193,7 @@ function getZodSchemaForFieldType(
         }
       } else if (fieldType === "entry") {
         const contentTypes = getReferencedContentTypes(field);
-        if (
-          contentTypes.length > 0 &&
-          contentTypes.every((type) => schemas[type])
-        ) {
+        if (contentTypes.length > 0) {
           schema =
             contentTypes.length === 1
               ? createReferencedFieldSchema(
@@ -318,7 +313,12 @@ function generateZodSchema(
     shape[field.id] = getZodSchemaForFieldType(field, config, schemas);
   }
 
-  return z.object(shape);
+  return z.object({
+    sys: z.object({
+      contentType: z.object({ id: z.literal(contentType.sys.id) }),
+    }),
+    fields: z.object(shape),
+  });
 }
 
 /**
