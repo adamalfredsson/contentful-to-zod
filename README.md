@@ -60,13 +60,13 @@ const pages = response.items.map((item) => pageSchema.parse(item));
 
 ## 🛠 CLI Options
 
-| Option                | Description                               | Default  |
-| --------------------- | ----------------------------------------- | -------- |
-| `-i, --input <path>`  | Path to Contentful schema JSON file       | Required |
-| `-o, --output <path>` | Output path for generated TypeScript file | Required |
-| `--passthrough`       | Allow unknown keys in objects             | `false`  |
-| `-a, --allow-unknown` | Use `z.unknown()` for unsupported types   | `false`  |
-| `-f, --flat`          | Generate flat schemas without references  | `false`  |
+| Option                   | Description                                                    | Default  |
+| ------------------------ | -------------------------------------------------------------- | -------- |
+| `-i, --input <path>`     | Path to Contentful schema JSON file                            | Required |
+| `-o, --output <path>`    | Output path for generated TypeScript file                      | Required |
+| `--passthrough`          | Allow unknown keys in objects                                  | `false`  |
+| `-a, --abort-on-unknown` | Throw error for unsupported types instead of using z.unknown() | `false`  |
+| `-f, --flat`             | Generate flat schemas without references                       | `false`  |
 
 ## 📝 License
 

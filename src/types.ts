@@ -72,10 +72,10 @@ export interface GeneratorOptions {
   passthrough?: boolean;
 
   /**
-   * Whether to use z.unknown() for unsupported types instead of throwing an error
+   * Whether to abort on unsupported types instead of using z.unknown()
    * @default false
    */
-  allowUnknown?: boolean;
+  abortOnUnknown?: boolean;
 
   /**
    * Whether to generate flat schemas

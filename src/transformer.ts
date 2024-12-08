@@ -186,9 +186,10 @@ function getZodSchemaForFieldType(
           );
           schema = z.array(itemSchema);
         } else {
-          if (!config.allowUnknown) {
+          if (config.abortOnUnknown) {
             throw new Error("Unknown array field");
           }
+          console.warn("Unknown array field");
           return z.array(z.unknown());
         }
       } else if (fieldType === "entry") {
@@ -211,9 +212,10 @@ function getZodSchemaForFieldType(
           });
         }
       } else {
-        if (!config.allowUnknown) {
+        if (config.abortOnUnknown) {
           throw new Error(`Unsupported field type: ${fieldType}`);
         }
+        console.warn(`Unsupported field type: ${fieldType}`);
         schema = z.unknown();
       }
       break;

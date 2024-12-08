@@ -2,6 +2,9 @@
 
 import { Command } from "commander";
 import fs from "fs";
+import { createRequire } from "module";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { z } from "zod";
 import { isZodSchemaWithInternalReference } from "./augments/internal.js";
 import { isZodSchemaWithReference } from "./augments/reference.js";
@@ -15,9 +18,6 @@ import type {
 } from "./types.js";
 import { unique } from "./utils/array.js";
 import { toPascalCase } from "./utils/string.js";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import { createRequire } from "module";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,14 +27,15 @@ const { version } = require(join(__dirname, "../package.json"));
 /**
  * Converts a Zod schema to its string representation for code generation
  * @param schema - The Zod schema to convert
- * @param useUnknownInsteadOfThrow - Whether to use z.unknown() for unsupported types instead of throwing an error
+ * @param config - Generator configuration
  * @returns A string representation of the schema that can be used in generated code
  */
 function zodToString(schema: unknown, config: GeneratorConfig): string {
   if (!(schema instanceof z.ZodType)) {
-    if (!config.allowUnknown) {
+    if (config.abortOnUnknown) {
       throw new Error("Attempted to transform a non-Zod type");
     }
+    console.error("Attempted to transform a non-Zod type");
     return "z.unknown()";
   }
 
@@ -111,10 +112,11 @@ function zodToString(schema: unknown, config: GeneratorConfig): string {
       break;
 
     default:
-      if (config.allowUnknown) {
-        return "z.unknown()";
+      if (config.abortOnUnknown) {
+        throw new Error(`Unsupported Zod type: ${schema._def.typeName}`);
       }
-      throw new Error(`Unsupported Zod type: ${schema._def.typeName}`);
+      console.error(`Unsupported Zod type: ${schema._def.typeName}`);
+      return "z.unknown()";
   }
 
   return result;
@@ -218,7 +220,7 @@ function getDefaultConfig(options: GeneratorOptions): GeneratorConfig {
     input: options.input,
     output: options.output,
     passthrough: options.passthrough ?? false,
-    allowUnknown: options.allowUnknown ?? false,
+    abortOnUnknown: options.abortOnUnknown ?? false,
     flat: options.flat ?? false,
   };
 }
@@ -241,8 +243,8 @@ function main(): void {
     )
     .option("--passthrough", "Allow unknown keys in objects", false)
     .option(
-      "-a, --allow-unknown",
-      "Use z.unknown() for unsupported types instead of throwing an error",
+      "-a, --abort-on-unknown",
+      "Throw error for unsupported types instead of using z.unknown()",
       false
     )
     .option(
