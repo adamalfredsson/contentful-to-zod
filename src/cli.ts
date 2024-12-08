@@ -10,7 +10,7 @@ import { isZodSchemaWithInternalReference } from "./augments/internal.js";
 import { isZodSchemaWithReference } from "./augments/reference.js";
 import { internalSchemas } from "./schemas/index.js";
 import { richTextSchema } from "./schemas/rich-text.js";
-import { generateAllZodSchemas } from "./transformer.js";
+import { generateContentfulZodSchemas } from "./transformer.js";
 import type {
   ContentfulSchema,
   GeneratorConfig,
@@ -263,10 +263,7 @@ function main(): void {
       fs.readFileSync(config.input, "utf-8")
     );
 
-    const schemas = generateAllZodSchemas(
-      contentfulSchema.contentTypes,
-      config
-    );
+    const schemas = generateContentfulZodSchemas(contentfulSchema, config);
     generateTypeScriptFile(schemas, config);
 
     console.log(`Successfully generated Zod schemas at ${config.output}`);

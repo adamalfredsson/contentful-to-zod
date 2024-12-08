@@ -6,6 +6,7 @@ import { richTextSchema } from "./schemas/rich-text.js";
 import {
   ContentfulContentType,
   ContentfulField,
+  ContentfulSchema,
   GeneratorConfig,
 } from "./types.js";
 
@@ -325,16 +326,16 @@ function generateZodSchema(
 
 /**
  * Generates Zod schemas for all content types
- * @param contentTypes - Array of Contentful content types
+ * @param contentfulSchema - Contentful schema JSON
  * @param config - Generator configuration options
  * @returns Record of content type IDs to their generated Zod schemas
  */
-export function generateAllZodSchemas(
-  contentTypes: ContentfulContentType[],
+export function generateContentfulZodSchemas(
+  contentfulSchema: Pick<ContentfulSchema, "contentTypes">,
   config: GeneratorConfig
 ): Record<string, z.ZodObject<z.ZodRawShape>> {
   // Sort content types based on dependencies
-  const sortedContentTypes = sortContentTypes(contentTypes);
+  const sortedContentTypes = sortContentTypes(contentfulSchema.contentTypes);
 
   // Generate schemas in dependency order
   const schemas: Record<string, z.ZodObject<z.ZodRawShape>> = {};
