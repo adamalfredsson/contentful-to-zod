@@ -71,3 +71,21 @@ const pages = response.items.map((item) => pageSchema.parse(item));
 ## 📝 License
 
 MIT
+
+## Contributing
+
+### Release
+
+```bash
+npm version major|minor|patch
+```
+
+```bash
+git push origin main
+```
+
+```bash
+$VERSION=v$(npm version | grep contentful-to-zod | cut -d"'" -f 4)
+git push origin $VERSION
+gh release create $VERSION --title $VERSION --generate-notes
+```
