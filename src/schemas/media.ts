@@ -19,9 +19,14 @@ const fileSchema = z.object({
 });
 
 const _mediaSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  file: fileSchema,
+  sys: z.object({
+    type: z.literal("Asset"),
+  }),
+  fields: z.object({
+    title: z.string(),
+    description: z.string(),
+    file: fileSchema,
+  }),
 });
 
 export const mediaSchema = augmentSchemaWithInternalReference(_mediaSchema, {

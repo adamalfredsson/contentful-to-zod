@@ -1,229 +1,16 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import fs from "fs";
-import { createRequire } from "module";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
-import { z } from "zod";
-import { isZodSchemaWithInternalReference } from "./augments/internal.js";
-import { isZodSchemaWithReference } from "./augments/reference.js";
-import { internalSchemas } from "./schemas/index.js";
-import { richTextSchema } from "./schemas/rich-text.js";
-import { generateContentfulZodSchemas } from "./transformer.js";
-import type {
-  ContentfulSchema,
-  GeneratorConfig,
-  GeneratorOptions,
-} from "./types.js";
-import { unique } from "./utils/array.js";
-import { toPascalCase } from "./utils/string.js";
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import contentfulZodGenerator from "./index.js";
+import { GeneratorOptions } from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url);
 const { version } = require(join(__dirname, "../package.json"));
-
-/**
- * Converts a Zod schema to its string representation for code generation
- * @param schema - The Zod schema to convert
- * @param config - Generator configuration
- * @returns A string representation of the schema that can be used in generated code
- */
-function zodToString(schema: unknown, config: GeneratorConfig): string {
-  if (!(schema instanceof z.ZodType)) {
-    if (config.abortOnUnknown) {
-      throw new Error("Attempted to transform a non-Zod type");
-    }
-    console.error("Attempted to transform a non-Zod type");
-    return "z.unknown()";
-  }
-
-  if (!config.flat && isZodSchemaWithReference(schema)) {
-    return `${createSchemaName(schema._reference)}`;
-  }
-
-  let result = "";
-  switch (schema._def.typeName) {
-    case "ZodObject": {
-      const shape = schema._def.shape();
-      const fields = Object.entries(shape)
-        .map(([key, value]) => {
-          return `    ${key}: ${zodToString(value, config)}`;
-        })
-        .join(",\n");
-      result = `z.object({\n${fields}\n  })`;
-      if (config.passthrough) {
-        result += ".passthrough()";
-      }
-      break;
-    }
-
-    case "ZodArray":
-      result = `z.array(${zodToString(schema._def.type, config)})`;
-      break;
-
-    case "ZodOptional":
-      result = `${zodToString(schema._def.innerType, config)}.optional()`;
-      break;
-
-    case "ZodString":
-      result = "z.string()";
-      if (
-        schema._def.checks?.some(
-          (check: z.ZodStringCheck) => check.kind === "datetime"
-        )
-      ) {
-        result += ".datetime()";
-      }
-      break;
-
-    case "ZodNumber":
-      result = "z.number()";
-      if (
-        schema._def.checks?.some(
-          (check: z.ZodNumberCheck) => check.kind === "int"
-        )
-      ) {
-        result += ".int()";
-      }
-      break;
-
-    case "ZodBoolean":
-      result = "z.boolean()";
-      break;
-
-    case "ZodLiteral":
-      result = `z.literal(${JSON.stringify(schema._def.value)})`;
-      break;
-
-    case "ZodRecord":
-      result = `z.record(${zodToString(schema._def.valueType, config)})`;
-      break;
-
-    case "ZodUnknown":
-      result = "z.unknown()";
-      break;
-
-    case "ZodUnion":
-      result = `z.union([${schema._def.options
-        .map((option: z.ZodType) => zodToString(option, config))
-        .join(", ")}])`;
-      break;
-
-    default:
-      if (config.abortOnUnknown) {
-        throw new Error(`Unsupported Zod type: ${schema._def.typeName}`);
-      }
-      console.error(`Unsupported Zod type: ${schema._def.typeName}`);
-      return "z.unknown()";
-  }
-
-  return result;
-}
-
-function findInternalReferences(schema: unknown): string[] {
-  if (!(schema instanceof z.ZodType)) {
-    return [];
-  }
-
-  if (isZodSchemaWithInternalReference(schema)) {
-    return [schema._reference];
-  }
-
-  switch (schema._def.typeName) {
-    case "ZodObject": {
-      return Object.values(schema._def.shape()).flatMap(findInternalReferences);
-    }
-
-    case "ZodArray":
-      return findInternalReferences(schema._def.type);
-
-    case "ZodOptional":
-      return findInternalReferences(schema._def.innerType);
-
-    case "ZodUnion":
-      return schema._def.options.flatMap(findInternalReferences);
-
-    default:
-      return [];
-  }
-}
-
-/**
- * Generates a TypeScript file containing Zod schema definitions and their types
- * @param schemas - Record of schema names to their Zod schema objects
- * @param config - Generator configuration options
- */
-function generateTypeScriptFile(
-  schemas: Record<string, z.ZodType>,
-  config: GeneratorConfig
-): void {
-  const internalReferences = unique(
-    Object.values(schemas).flatMap(findInternalReferences)
-  );
-
-  const imports = [
-    `import { z } from "zod";`,
-    ...(internalReferences.includes(richTextSchema._reference)
-      ? ["import type { Document } from '@contentful/rich-text-types';"]
-      : []),
-  ].join("\n");
-
-  const internalDefinitions = internalReferences
-    .map((reference) => {
-      const schema = internalSchemas.find(
-        (schema) => schema._reference === reference
-      );
-
-      if (!schema) {
-        throw new Error(`Could not find internal schema for ${reference}`);
-      }
-
-      return [
-        `export const ${createSchemaName(reference)} = ${zodToString(schema, {
-          ...config,
-          flat: true,
-        })}${schema._typeCast ? ` as z.ZodType<${schema._typeCast}>` : ""};`,
-        `export type ${toPascalCase(reference)} = z.infer<typeof ${createSchemaName(reference)}>;`,
-      ].join("\n\n");
-    })
-    .join("\n\n");
-
-  const schemaDefinitions = Object.entries(schemas)
-    .map(([name, schema]) =>
-      [
-        `export const ${createSchemaName(name)} = ${zodToString(schema, config)};`,
-        `export type ${toPascalCase(name)} = z.infer<typeof ${createSchemaName(name)}>;`,
-      ].join("\n\n")
-    )
-    .join("\n\n");
-
-  const content = [imports, internalDefinitions, schemaDefinitions].join(
-    "\n\n"
-  );
-
-  fs.writeFileSync(config.output, content, "utf-8");
-}
-
-function createSchemaName(contentTypeId: string): string {
-  return `${contentTypeId}Schema`;
-}
-
-/**
- * Creates a default configuration by merging user options with defaults
- * @param options - User-provided generator options
- * @returns Complete generator configuration
- */
-function getDefaultConfig(options: GeneratorOptions): GeneratorConfig {
-  return {
-    input: options.input,
-    output: options.output,
-    passthrough: options.passthrough ?? false,
-    abortOnUnknown: options.abortOnUnknown ?? false,
-    flat: options.flat ?? false,
-  };
-}
 
 /**
  * Main entry point for the CLI application
@@ -256,17 +43,12 @@ function main(): void {
 
   program.parse();
 
-  const config = getDefaultConfig(program.opts());
+  const options = program.opts<GeneratorOptions>();
 
   try {
-    const contentfulSchema: ContentfulSchema = JSON.parse(
-      fs.readFileSync(config.input, "utf-8")
-    );
+    contentfulZodGenerator(options);
 
-    const schemas = generateContentfulZodSchemas(contentfulSchema, config);
-    generateTypeScriptFile(schemas, config);
-
-    console.log(`Successfully generated Zod schemas at ${config.output}`);
+    console.log(`Successfully generated Zod schemas at ${options.output}`);
   } catch (error) {
     console.error(
       "Error generating schemas:",

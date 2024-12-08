@@ -17,7 +17,8 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsx watch src/cli.ts",
+    "test": "vitest",
+    "dev": "tsx src/cli.ts",
     "start": "node dist/cli.js",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -42,6 +43,7 @@
     "prettier": "^3.4.2",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
-    "typescript": "5.7.2"
+    "typescript": "5.7.2",
+    "vitest": "^2.1.8"
   }
 }

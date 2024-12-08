@@ -7,7 +7,7 @@ import {
   ContentfulContentType,
   ContentfulField,
   ContentfulSchema,
-  GeneratorConfig,
+  TransformerConfig,
 } from "./types.js";
 
 /**
@@ -103,7 +103,7 @@ function createContentTypeUnion<TKey extends string>(
  */
 function getZodSchemaForFieldType(
   field: ContentfulField,
-  config: GeneratorConfig,
+  config: TransformerConfig,
   schemas: Record<string, z.ZodObject<z.ZodRawShape>>
 ): z.ZodType {
   let schema: z.ZodType;
@@ -129,14 +129,7 @@ function getZodSchemaForFieldType(
       schema = locationSchema;
       break;
     case "asset":
-      schema = z.object({
-        sys: z.object({
-          type: z.literal("Link"),
-          linkType: z.literal("Asset"),
-          id: z.string(),
-        }),
-        fields: mediaSchema,
-      });
+      schema = mediaSchema;
       break;
     default:
       if (fieldType.startsWith("array:")) {
@@ -295,7 +288,7 @@ function sortContentTypes(
  */
 function generateZodSchema(
   contentType: ContentfulContentType,
-  config: GeneratorConfig,
+  config: TransformerConfig,
   schemas: Record<string, z.ZodObject<z.ZodRawShape>>
 ): z.ZodObject<z.ZodRawShape> {
   const shape: Record<string, z.ZodType> = {};
@@ -322,7 +315,7 @@ function generateZodSchema(
  */
 export function generateContentfulZodSchemas(
   contentfulSchema: Pick<ContentfulSchema, "contentTypes">,
-  config: GeneratorConfig
+  config: TransformerConfig = {}
 ): Record<string, z.ZodObject<z.ZodRawShape>> {
   // Sort content types based on dependencies
   const sortedContentTypes = sortContentTypes(contentfulSchema.contentTypes);

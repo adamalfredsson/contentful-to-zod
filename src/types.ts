@@ -54,17 +54,7 @@ export interface ContentfulSchema {
   roles: any[];
 }
 
-export interface GeneratorOptions {
-  /**
-   * Path to the input Contentful schema JSON file
-   */
-  input: string;
-
-  /**
-   * Path where the generated TypeScript file should be written
-   */
-  output: string;
-
+export type TransformerConfig = {
   /**
    * Whether to allow unknown keys in objects
    * @default false
@@ -76,12 +66,22 @@ export interface GeneratorOptions {
    * @default false
    */
   abortOnUnknown?: boolean;
+};
+
+export type GeneratorOptions = TransformerConfig & {
+  /**
+   * Path to the input Contentful schema JSON file
+   */
+  input: string;
+
+  /**
+   * Path where the generated TypeScript file should be written
+   */
+  output: string;
 
   /**
    * Whether to generate flat schemas
    * @default false
    */
   flat?: boolean;
-}
-
-export type GeneratorConfig = Required<GeneratorOptions>;
+};
