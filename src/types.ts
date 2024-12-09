@@ -68,7 +68,7 @@ export type TransformerConfig = {
   abortOnUnknown?: boolean;
 };
 
-export type GeneratorOptions = TransformerConfig & {
+export type ContentfulToZodOptions = TransformerConfig & {
   /**
    * Path to the input Contentful schema JSON file
    */
@@ -84,4 +84,7 @@ export type GeneratorOptions = TransformerConfig & {
    * @default false
    */
   flat?: boolean;
+
+  toTypeName?: (entity: string) => string;
+  toSchemaName?: (entity: string) => string;
 };
