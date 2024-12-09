@@ -3,8 +3,8 @@ import {
   augmentSchemaWithReferences,
   isZodSchemaWithReferences,
 } from "./augments/reference.js";
+import { assetSchema } from "./schemas/asset.js";
 import { locationSchema } from "./schemas/location.js";
-import { mediaSchema } from "./schemas/media.js";
 import { richTextSchema } from "./schemas/rich-text.js";
 import {
   ContentfulContentType,
@@ -111,7 +111,7 @@ function getZodSchemaForFieldType({
       schema = locationSchema;
       break;
     case "Asset":
-      schema = mediaSchema;
+      schema = assetSchema;
       break;
     case "Link":
       return getZodSchemaForFieldType({ field, type: field.linkType, config });

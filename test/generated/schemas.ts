@@ -1,7 +1,7 @@
 import type { Document } from "@contentful/rich-text-types";
 import { z } from "zod";
 
-export const contentfulMediaSchema = z.object({
+export const contentfulAssetSchema = z.object({
   sys: z.object({
     type: z.literal("Asset"),
   }),
@@ -25,7 +25,7 @@ export const contentfulMediaSchema = z.object({
   }),
 });
 
-export type ContentfulMedia = z.infer<typeof contentfulMediaSchema>;
+export type ContentfulAsset = z.infer<typeof contentfulAssetSchema>;
 
 export const contentfulRichTextSchema = z.unknown() as z.ZodType<Document>;
 
@@ -91,7 +91,7 @@ const _baseImageStack3 = z.object({
     }),
   }),
   fields: z.object({
-    images: z.array(contentfulMediaSchema),
+    images: z.array(contentfulAssetSchema),
     border: z.boolean().optional(),
   }),
 });
@@ -112,7 +112,7 @@ const _baseImageStack5 = z.object({
     }),
   }),
   fields: z.object({
-    images: z.array(contentfulMediaSchema),
+    images: z.array(contentfulAssetSchema),
     border: z.boolean().optional(),
   }),
 });
@@ -135,7 +135,7 @@ const _baseSEO = z.object({
   fields: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
-    image: contentfulMediaSchema,
+    image: contentfulAssetSchema,
   }),
 });
 
@@ -358,7 +358,7 @@ const _baseTeaserCard = z.object({
     title: z.string(),
     body: z.string(),
     cta: z.unknown(),
-    image: contentfulMediaSchema,
+    image: contentfulAssetSchema,
   }),
 });
 
@@ -384,7 +384,7 @@ const _basePromotionCard = z.object({
     title: z.string(),
     body: z.string(),
     cta: z.unknown(),
-    image: contentfulMediaSchema,
+    image: contentfulAssetSchema,
   }),
 });
 
@@ -411,7 +411,7 @@ const _baseContentWithImageCard = z.object({
     title: z.string(),
     body: contentfulRichTextSchema,
     cta: z.unknown(),
-    image: contentfulMediaSchema,
+    image: contentfulAssetSchema,
   }),
 });
 
@@ -435,7 +435,7 @@ const _baseImageCard = z.object({
     }),
   }),
   fields: z.object({
-    image: contentfulMediaSchema,
+    image: contentfulAssetSchema,
   }),
 });
 

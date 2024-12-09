@@ -18,7 +18,7 @@ const fileSchema = z.object({
   contentType: z.string(),
 });
 
-const _mediaSchema = z.object({
+const _assetSchema = z.object({
   sys: z.object({
     type: z.literal("Asset"),
   }),
@@ -29,8 +29,8 @@ const _mediaSchema = z.object({
   }),
 });
 
-export const mediaSchema = augmentSchemaWithInternalReference(_mediaSchema, {
-  reference: "contentfulMedia",
+export const assetSchema = augmentSchemaWithInternalReference(_assetSchema, {
+  reference: "contentfulAsset",
 });
 
-export type Media = z.infer<typeof mediaSchema>;
+export type Asset = z.infer<typeof assetSchema>;
