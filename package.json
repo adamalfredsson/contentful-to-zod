@@ -1,6 +1,6 @@
 {
   "name": "contentful-to-zod",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "Generate Zod schemas from Contentful content types",
   "repository": {
     "type": "git",
