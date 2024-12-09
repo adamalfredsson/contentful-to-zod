@@ -189,29 +189,7 @@ const baseSEO = z.object({
   fields: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
-    image: z.object({
-      sys: z.object({
-        type: z.literal("Asset"),
-      }),
-      fields: z.object({
-        title: z.string(),
-        description: z.string(),
-        file: z.object({
-          url: z.string(),
-          details: z.object({
-            size: z.number(),
-            image: z
-              .object({
-                width: z.number(),
-                height: z.number(),
-              })
-              .optional(),
-          }),
-          fileName: z.string(),
-          contentType: z.string(),
-        }),
-      }),
-    }),
+    image: contentfulMediaSchema,
   }),
 });
 
@@ -231,7 +209,7 @@ const baseHero = z.object({
   }),
   fields: z.object({
     title: z.string(),
-    body: z.unknown(),
+    body: contentfulRichTextSchema,
     cta: z.unknown(),
   }),
 });
@@ -258,7 +236,7 @@ const baseFooter = z.object({
     title: z.string(),
     subtitle: z.string(),
     cta: z.unknown(),
-    ctaBody: z.unknown(),
+    ctaBody: contentfulRichTextSchema,
     addressTitle: z.string(),
     addressEmail: z.unknown(),
     addressPhone: z.unknown(),
@@ -266,7 +244,7 @@ const baseFooter = z.object({
     linksTitle: z.string(),
     linksItems: z.unknown(),
     aboutTitle: z.string(),
-    aboutBody: z.unknown(),
+    aboutBody: contentfulRichTextSchema,
     aboutCta: z.unknown(),
     copyright: z.string(),
   }),
@@ -327,7 +305,7 @@ const baseMarketingBannerCard = z.object({
   }),
   fields: z.object({
     title: z.string(),
-    body: z.unknown(),
+    body: contentfulRichTextSchema,
     cta: z.unknown(),
     imageStack: z.unknown(),
   }),
@@ -355,7 +333,7 @@ const baseContentCard = z.object({
   }),
   fields: z.object({
     title: z.string(),
-    body: z.unknown(),
+    body: contentfulRichTextSchema,
     cta: z.unknown(),
   }),
 });
@@ -382,7 +360,7 @@ const baseConsultationCard = z.object({
   }),
   fields: z.object({
     title: z.string(),
-    body: z.unknown(),
+    body: contentfulRichTextSchema,
     cta: z.unknown(),
     imageStack: z.unknown(),
   }),
@@ -410,7 +388,7 @@ const baseClientsCard = z.object({
   }),
   fields: z.object({
     title: z.string(),
-    body: z.unknown(),
+    body: contentfulRichTextSchema,
     imageStack: z.unknown(),
   }),
 });
@@ -439,29 +417,7 @@ const baseTeaserCard = z.object({
     title: z.string(),
     body: z.string(),
     cta: z.unknown(),
-    image: z.object({
-      sys: z.object({
-        type: z.literal("Asset"),
-      }),
-      fields: z.object({
-        title: z.string(),
-        description: z.string(),
-        file: z.object({
-          url: z.string(),
-          details: z.object({
-            size: z.number(),
-            image: z
-              .object({
-                width: z.number(),
-                height: z.number(),
-              })
-              .optional(),
-          }),
-          fileName: z.string(),
-          contentType: z.string(),
-        }),
-      }),
-    }),
+    image: contentfulMediaSchema,
   }),
 });
 
@@ -487,29 +443,7 @@ const basePromotionCard = z.object({
     title: z.string(),
     body: z.string(),
     cta: z.unknown(),
-    image: z.object({
-      sys: z.object({
-        type: z.literal("Asset"),
-      }),
-      fields: z.object({
-        title: z.string(),
-        description: z.string(),
-        file: z.object({
-          url: z.string(),
-          details: z.object({
-            size: z.number(),
-            image: z
-              .object({
-                width: z.number(),
-                height: z.number(),
-              })
-              .optional(),
-          }),
-          fileName: z.string(),
-          contentType: z.string(),
-        }),
-      }),
-    }),
+    image: contentfulMediaSchema,
   }),
 });
 
@@ -534,31 +468,9 @@ const baseContentWithImageCard = z.object({
   }),
   fields: z.object({
     title: z.string(),
-    body: z.unknown(),
+    body: contentfulRichTextSchema,
     cta: z.unknown(),
-    image: z.object({
-      sys: z.object({
-        type: z.literal("Asset"),
-      }),
-      fields: z.object({
-        title: z.string(),
-        description: z.string(),
-        file: z.object({
-          url: z.string(),
-          details: z.object({
-            size: z.number(),
-            image: z
-              .object({
-                width: z.number(),
-                height: z.number(),
-              })
-              .optional(),
-          }),
-          fileName: z.string(),
-          contentType: z.string(),
-        }),
-      }),
-    }),
+    image: contentfulMediaSchema,
   }),
 });
 
@@ -582,29 +494,7 @@ const baseImageCard = z.object({
     }),
   }),
   fields: z.object({
-    image: z.object({
-      sys: z.object({
-        type: z.literal("Asset"),
-      }),
-      fields: z.object({
-        title: z.string(),
-        description: z.string(),
-        file: z.object({
-          url: z.string(),
-          details: z.object({
-            size: z.number(),
-            image: z
-              .object({
-                width: z.number(),
-                height: z.number(),
-              })
-              .optional(),
-          }),
-          fileName: z.string(),
-          contentType: z.string(),
-        }),
-      }),
-    }),
+    image: contentfulMediaSchema,
   }),
 });
 
@@ -624,7 +514,7 @@ const baseFormCard = z.object({
   }),
   fields: z.object({
     title: z.string(),
-    body: z.unknown(),
+    body: contentfulRichTextSchema,
     form: z.string(),
   }),
 });

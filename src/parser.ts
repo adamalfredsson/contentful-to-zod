@@ -23,9 +23,12 @@ function zodToString(schema: unknown, options: GeneratorOptions): string {
     return "z.unknown()";
   }
 
+  if (!options.flat && isZodSchemaWithInternalReference(schema)) {
+    return toExportedSchemaName(schema._reference);
+  }
+
   if (!options.flat && isZodSchemaWithReferences(schema)) {
     return "z.unknown()";
-    // return `z.lazy(() => ${schema._references.length === 1 ? createSchemaName(schema._references[0]) : `z.union([${schema._references.map((reference) => createSchemaName(reference))}])`})`;
   }
 
   let result = "";
@@ -179,7 +182,7 @@ export function generateTypeScriptFile(
           }
         )}${schema._typeCast ? ` as z.ZodType<${schema._typeCast}>` : ""};`,
 
-        `export type ${toPascalCase(reference)} = z.infer<typeof ${toExportedSchemaName(reference)}>;`,
+        `export type ${toSchemaTypeName(reference)} = z.infer<typeof ${toExportedSchemaName(reference)}>;`,
       ].join("\n\n");
     })
     .join("\n\n");
