@@ -1,14 +1,8 @@
 import { z } from "zod";
 import { augmentSchemaWithInternalReference } from "../augments/internal.js";
 
-const imageDetailsSchema = z.object({
-  width: z.number(),
-  height: z.number(),
-});
-
 const fileDetailsSchema = z.object({
   size: z.number(),
-  image: imageDetailsSchema.optional(),
 });
 
 const fileSchema = z.object({

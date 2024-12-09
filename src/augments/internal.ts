@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { copyWithMetadata } from "../utils/object.js";
 
-export function augmentSchemaWithInternalReference(
-  schema: z.ZodType,
+export function augmentSchemaWithInternalReference<TSchema extends z.ZodType>(
+  schema: TSchema,
   { reference, typeCast }: { reference: string; typeCast?: string }
 ) {
   return copyWithMetadata(schema, {
