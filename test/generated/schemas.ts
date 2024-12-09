@@ -1,7 +1,7 @@
 import type { Document } from "@contentful/rich-text-types";
 import { z } from "zod";
 
-export const contentfulMediaSchema = z.object({
+export const contentfulImageSchema = z.object({
   sys: z.object({
     type: z.literal("Asset"),
   }),
@@ -12,12 +12,10 @@ export const contentfulMediaSchema = z.object({
       url: z.string(),
       details: z.object({
         size: z.number(),
-        image: z
-          .object({
-            width: z.number(),
-            height: z.number(),
-          })
-          .optional(),
+        image: z.object({
+          width: z.number(),
+          height: z.number(),
+        }),
       }),
       fileName: z.string(),
       contentType: z.string(),
@@ -25,7 +23,7 @@ export const contentfulMediaSchema = z.object({
   }),
 });
 
-export type ContentfulMedia = z.infer<typeof contentfulMediaSchema>;
+export type ContentfulImage = z.infer<typeof contentfulImageSchema>;
 
 export const contentfulRichTextSchema = z.unknown() as z.ZodType<Document>;
 
@@ -91,7 +89,7 @@ const _baseImageStack3 = z.object({
     }),
   }),
   fields: z.object({
-    images: z.array(contentfulMediaSchema),
+    images: z.array(contentfulImageSchema),
     border: z.boolean().optional(),
   }),
 });
@@ -112,7 +110,7 @@ const _baseImageStack5 = z.object({
     }),
   }),
   fields: z.object({
-    images: z.array(contentfulMediaSchema),
+    images: z.array(contentfulImageSchema),
     border: z.boolean().optional(),
   }),
 });
@@ -135,7 +133,7 @@ const _baseSEO = z.object({
   fields: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
-    image: contentfulMediaSchema,
+    image: contentfulImageSchema,
   }),
 });
 
@@ -358,7 +356,7 @@ const _baseTeaserCard = z.object({
     title: z.string(),
     body: z.string(),
     cta: z.unknown(),
-    image: contentfulMediaSchema,
+    image: contentfulImageSchema,
   }),
 });
 
@@ -384,7 +382,7 @@ const _basePromotionCard = z.object({
     title: z.string(),
     body: z.string(),
     cta: z.unknown(),
-    image: contentfulMediaSchema,
+    image: contentfulImageSchema,
   }),
 });
 
@@ -411,7 +409,7 @@ const _baseContentWithImageCard = z.object({
     title: z.string(),
     body: contentfulRichTextSchema,
     cta: z.unknown(),
-    image: contentfulMediaSchema,
+    image: contentfulImageSchema,
   }),
 });
 
@@ -435,7 +433,7 @@ const _baseImageCard = z.object({
     }),
   }),
   fields: z.object({
-    image: contentfulMediaSchema,
+    image: contentfulImageSchema,
   }),
 });
 

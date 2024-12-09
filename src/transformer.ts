@@ -3,8 +3,9 @@ import {
   augmentSchemaWithReferences,
   isZodSchemaWithReferences,
 } from "./augments/reference.js";
+import { assetSchema } from "./schemas/asset.js";
+import { imageSchema } from "./schemas/image.js";
 import { locationSchema } from "./schemas/location.js";
-import { mediaSchema } from "./schemas/media.js";
 import { richTextSchema } from "./schemas/rich-text.js";
 import {
   ContentfulContentType,
@@ -111,7 +112,10 @@ function getZodSchemaForFieldType({
       schema = locationSchema;
       break;
     case "Asset":
-      schema = mediaSchema;
+      const isImageOnly = field.validations?.[0]?.linkMimetypeGroup?.every(
+        (mime: unknown) => mime === "image"
+      );
+      schema = isImageOnly ? imageSchema : assetSchema;
       break;
     case "Link":
       return getZodSchemaForFieldType({ field, type: field.linkType, config });
