@@ -1,19 +1,19 @@
 import { z } from "zod";
 import { copyWithMetadata } from "../utils/object.js";
 
-export function augmentSchemaWithReference(
-  schema: z.ZodObject<z.ZodRawShape>,
-  reference: string
+export function augmentSchemaWithReferences(
+  schema: z.ZodType,
+  references: string[]
 ) {
-  return copyWithMetadata(schema, { _reference: reference });
+  return copyWithMetadata(schema, { _references: references });
 }
 
-export type ZodSchemaWithReference = ReturnType<
-  typeof augmentSchemaWithReference
+export type ZodSchemaWithReferences = ReturnType<
+  typeof augmentSchemaWithReferences
 >;
 
-export function isZodSchemaWithReference(
+export function isZodSchemaWithReferences(
   schema: z.ZodType
-): schema is ZodSchemaWithReference {
-  return "_reference" in schema;
+): schema is ZodSchemaWithReferences {
+  return "_references" in schema;
 }

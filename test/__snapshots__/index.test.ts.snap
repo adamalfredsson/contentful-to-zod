@@ -4,73 +4,10 @@ exports[`contentful-to-zod > should parse expected output 1`] = `
 [
   {
     "fields": {
+      "breadcrumbLabel": "Hem",
       "breadcrumbs": false,
       "content": [
         {
-          "fields": {
-            "column1": {
-              "fields": {
-                "body": {
-                  "content": [
-                    {
-                      "content": [
-                        {
-                          "data": {},
-                          "marks": [],
-                          "nodeType": "text",
-                          "value": "Some content",
-                        },
-                      ],
-                      "data": {},
-                      "nodeType": "paragraph",
-                    },
-                  ],
-                  "data": {},
-                  "nodeType": "document",
-                },
-                "title": "Content",
-              },
-              "sys": {
-                "contentType": {
-                  "sys": {
-                    "id": "contentCard",
-                  },
-                },
-              },
-            },
-            "column2": {
-              "fields": {
-                "img": {
-                  "fields": {
-                    "description": "Stora holm",
-                    "file": {
-                      "contentType": "image/jpeg",
-                      "details": {
-                        "image": {
-                          "height": 653,
-                          "width": 653,
-                        },
-                        "size": 102861,
-                      },
-                      "fileName": "3d8f5179-7c30-40af-ab14-be0403867e7c.jpg",
-                      "url": "//images.ctfassets.net/4jw5bnf8o5lk/20syGvKyOjHEei5Jc9sI3D/35d4958efeec30a5ce3719c735095609/3d8f5179-7c30-40af-ab14-be0403867e7c.jpg",
-                    },
-                    "title": "Stora holm",
-                  },
-                  "sys": {
-                    "type": "Asset",
-                  },
-                },
-              },
-              "sys": {
-                "contentType": {
-                  "sys": {
-                    "id": "imageCard",
-                  },
-                },
-              },
-            },
-          },
           "sys": {
             "contentType": {
               "sys": {
@@ -81,62 +18,6 @@ exports[`contentful-to-zod > should parse expected output 1`] = `
         },
       ],
       "hero": {
-        "fields": {
-          "body": {
-            "content": [
-              {
-                "content": [
-                  {
-                    "data": {},
-                    "marks": [],
-                    "nodeType": "text",
-                    "value": "Hero description",
-                  },
-                ],
-                "data": {},
-                "nodeType": "paragraph",
-              },
-              {
-                "content": [
-                  {
-                    "data": {},
-                    "marks": [],
-                    "nodeType": "text",
-                    "value": "With ",
-                  },
-                  {
-                    "data": {},
-                    "marks": [
-                      {
-                        "type": "bold",
-                      },
-                    ],
-                    "nodeType": "text",
-                    "value": "bold text",
-                  },
-                ],
-                "data": {},
-                "nodeType": "paragraph",
-              },
-            ],
-            "data": {},
-            "nodeType": "document",
-          },
-          "cta": {
-            "fields": {
-              "href": "/test",
-              "label": "Click me!",
-            },
-            "sys": {
-              "contentType": {
-                "sys": {
-                  "id": "link",
-                },
-              },
-            },
-          },
-          "title": "Hero",
-        },
         "sys": {
           "contentType": {
             "sys": {
@@ -145,6 +26,16 @@ exports[`contentful-to-zod > should parse expected output 1`] = `
           },
         },
       },
+      "layout": {
+        "sys": {
+          "contentType": {
+            "sys": {
+              "id": "layout",
+            },
+          },
+        },
+      },
+      "path": "/",
     },
     "sys": {
       "contentType": {
