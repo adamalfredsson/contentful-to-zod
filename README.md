@@ -41,6 +41,8 @@ contentful space export \
 npx contentful-to-zod --input ./contentful.json --output ./schemas.ts
 ```
 
+Browse a sample output [here](https://github.com/adamalfredsson/contentful-to-zod/blob/main/test/generated/schemas.ts)
+
 ### 📝 Configuration
 
 You can customize the generator behavior by creating a `contentful-to-zod.config.js` or `contentful-to-zod.config.mjs` file in your project root:
