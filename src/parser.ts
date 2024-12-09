@@ -4,30 +4,30 @@ import { isZodSchemaWithInternalReference } from "./augments/internal.js";
 import { isZodSchemaWithReferences } from "./augments/reference.js";
 import { internalSchemas } from "./schemas/index.js";
 import { richTextSchema } from "./schemas/rich-text.js";
-import { GeneratorOptions } from "./types.js";
+import { ContentfulToZodOptions } from "./types.js";
 import { unique } from "./utils/array.js";
 import { toPascalCase } from "./utils/string.js";
 
 /**
  * Converts a Zod schema to its string representation for code generation
  * @param schema - The Zod schema to convert
- * @param options - Generator options
+ * @param config - Resolved generator config
  * @returns A string representation of the schema that can be used in generated code
  */
-function zodToString(schema: unknown, options: GeneratorOptions): string {
+function zodToString(schema: unknown, config: ResolvedGeneratorConfig): string {
   if (!(schema instanceof z.ZodType)) {
-    if (options.abortOnUnknown) {
+    if (config.abortOnUnknown) {
       throw new Error("Attempted to transform a non-Zod type");
     }
     console.error("Attempted to transform a non-Zod type");
     return "z.unknown()";
   }
 
-  if (!options.flat && isZodSchemaWithInternalReference(schema)) {
-    return toExportedSchemaName(schema._reference);
+  if (!config.flat && isZodSchemaWithInternalReference(schema)) {
+    return config.toSchemaName(schema._reference);
   }
 
-  if (!options.flat && isZodSchemaWithReferences(schema)) {
+  if (!config.flat && isZodSchemaWithReferences(schema)) {
     return "z.unknown()";
   }
 
@@ -37,22 +37,22 @@ function zodToString(schema: unknown, options: GeneratorOptions): string {
       const shape = schema._def.shape();
       const fields = Object.entries(shape)
         .map(([key, value]) => {
-          return `    ${key}: ${zodToString(value, options)}`;
+          return `    ${key}: ${zodToString(value, config)}`;
         })
         .join(",\n");
       result = `z.object({\n${fields}\n  })`;
-      if (options.passthrough) {
+      if (config.passthrough) {
         result += ".passthrough()";
       }
       break;
     }
 
     case "ZodArray":
-      result = `z.array(${zodToString(schema._def.type, options)})`;
+      result = `z.array(${zodToString(schema._def.type, config)})`;
       break;
 
     case "ZodOptional":
-      result = `${zodToString(schema._def.innerType, options)}.optional()`;
+      result = `${zodToString(schema._def.innerType, config)}.optional()`;
       break;
 
     case "ZodString":
@@ -86,7 +86,7 @@ function zodToString(schema: unknown, options: GeneratorOptions): string {
       break;
 
     case "ZodRecord":
-      result = `z.record(${zodToString(schema._def.valueType, options)})`;
+      result = `z.record(${zodToString(schema._def.valueType, config)})`;
       break;
 
     case "ZodUnknown":
@@ -95,12 +95,12 @@ function zodToString(schema: unknown, options: GeneratorOptions): string {
 
     case "ZodUnion":
       result = `z.union([${schema._def.options
-        .map((option: z.ZodType) => zodToString(option, options))
+        .map((option: z.ZodType) => zodToString(option, config))
         .join(", ")}])`;
       break;
 
     default:
-      if (options.abortOnUnknown) {
+      if (config.abortOnUnknown) {
         throw new Error(`Unsupported Zod type: ${schema._def.typeName}`);
       }
       console.error(`Unsupported Zod type: ${schema._def.typeName}`);
@@ -139,6 +139,26 @@ function findInternalReferences(schema: unknown): string[] {
 }
 
 /**
+ * Combines default options with user-specified options
+ * @param options
+ * @returns
+ */
+function resolveConfig(options: ContentfulToZodOptions) {
+  return {
+    toTypeName(contentTypeId: string): string {
+      return toPascalCase(contentTypeId);
+    },
+    toSchemaName(contentTypeId: string): string {
+      return `${contentTypeId}Schema`;
+    },
+    flat: false,
+    ...options,
+  };
+}
+
+type ResolvedGeneratorConfig = ReturnType<typeof resolveConfig>;
+
+/**
  * Generates a TypeScript file containing Zod schema definitions and their types
  * @param schemas - Record of schema names to their Zod schema objects
  * @param options - Generator configuration options
@@ -150,8 +170,10 @@ export function generateTypeScriptFile(
       fields: z.ZodObject<z.ZodRawShape>;
     }>
   >,
-  options: GeneratorOptions
+  options: ContentfulToZodOptions
 ): void {
+  const config = resolveConfig(options);
+
   const internalReferences = unique(
     Object.values(schemas).flatMap(findInternalReferences)
   );
@@ -174,15 +196,15 @@ export function generateTypeScriptFile(
       }
 
       return [
-        `export const ${toExportedSchemaName(reference)} = ${zodToString(
+        `export const ${config.toSchemaName(reference)} = ${zodToString(
           schema,
           {
-            ...options,
+            ...config,
             flat: true,
           }
         )}${schema._typeCast ? ` as z.ZodType<${schema._typeCast}>` : ""};`,
 
-        `export type ${toSchemaTypeName(reference)} = z.infer<typeof ${toExportedSchemaName(reference)}>;`,
+        `export type ${config.toTypeName(reference)} = z.infer<typeof ${config.toSchemaName(reference)}>;`,
       ].join("\n\n");
     })
     .join("\n\n");
@@ -213,21 +235,21 @@ export function generateTypeScriptFile(
       );
 
       return [
-        `const ${toBaseSchemaName(name)} = ${zodToString(schema, options)};`,
+        `const ${toBaseSchemaName(name)} = ${zodToString(schema, config)};`,
 
-        `export type ${toSchemaTypeName(name)} = z.infer<typeof ${toBaseSchemaName(
+        `export type ${config.toTypeName(name)} = z.infer<typeof ${toBaseSchemaName(
           name
         )}> & { fields: {${[...fieldReferences.entries()]
           .map(
             ([field, reference]) =>
               `${field}${reference.optional ? "?" : ""}: (${reference.types
-                .map(toSchemaTypeName)
+                .map(config.toTypeName)
                 .concat(reference.optional ? ["undefined"] : [])
                 .join(" | ")})${reference.multiple ? "[]" : ""}`
           )
           .join(",\n")}} };`,
 
-        `export const ${toExportedSchemaName(name)}: z.ZodType<${toSchemaTypeName(
+        `export const ${config.toSchemaName(name)}: z.ZodType<${config.toTypeName(
           name
         )}> = ${toBaseSchemaName(name)}.extend({
           fields: ${toBaseSchemaName(name)}.shape.fields.extend({
@@ -236,9 +258,9 @@ export function generateTypeScriptFile(
                 ([field, reference]) =>
                   `${field}: z.lazy(() => ${reference.multiple ? "z.array(" : ""}${
                     reference.types.length === 1
-                      ? toExportedSchemaName(reference.types[0])
+                      ? config.toSchemaName(reference.types[0])
                       : `z.union([${reference.types
-                          .map(toExportedSchemaName)
+                          .map(config.toSchemaName)
                           .join(", ")}])`
                   }${reference.multiple ? ")" : ""})${reference.optional ? ".optional()" : ""}`
               )
@@ -258,12 +280,4 @@ export function generateTypeScriptFile(
 
 function toBaseSchemaName(contentTypeId: string): string {
   return `base${toPascalCase(contentTypeId)}`;
-}
-
-function toSchemaTypeName(contentTypeId: string): string {
-  return toPascalCase(contentTypeId);
-}
-
-function toExportedSchemaName(contentTypeId: string): string {
-  return `${contentTypeId}Schema`;
 }

@@ -1,9 +1,11 @@
 import fs from "node:fs";
 import { generateTypeScriptFile } from "./parser.js";
 import { generateContentfulZodSchemas } from "./transformer.js";
-import type { ContentfulSchema, GeneratorOptions } from "./types.js";
+import type { ContentfulSchema, ContentfulToZodOptions } from "./types.js";
 
-export default function contentfulZodGenerator(options: GeneratorOptions) {
+export default function contentfulZodGenerator(
+  options: ContentfulToZodOptions
+) {
   const contentfulSchema: ContentfulSchema = JSON.parse(
     fs.readFileSync(options.input, "utf-8")
   );
@@ -12,4 +14,8 @@ export default function contentfulZodGenerator(options: GeneratorOptions) {
   generateTypeScriptFile(schemas, options);
 }
 
-export { contentfulZodGenerator, generateContentfulZodSchemas };
+export {
+  contentfulZodGenerator,
+  generateContentfulZodSchemas,
+  type ContentfulToZodOptions,
+};

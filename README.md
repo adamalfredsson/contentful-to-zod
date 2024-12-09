@@ -41,6 +41,31 @@ contentful space export \
 npx contentful-to-zod --input ./contentful.json --output ./schemas.ts
 ```
 
+### 📝 Configuration
+
+You can customize the generator behavior by creating a `contentful-to-zod.config.js` or `contentful-to-zod.config.mjs` file in your project root:
+
+```js
+// contentful-to-zod.config.js
+/** @type {import('contentful-to-zod').ContentfulToZodConfig} */
+export default {
+  // Generate flat schemas without references
+  flat: true,
+
+  // Allow unknown keys in objects
+  passthrough: true,
+
+  // Throw error for unsupported types
+  abortOnUnknown: false,
+
+  // Custom naming functions
+  toTypeName: (entity) => `${entity}Type`,
+  toSchemaName: (entity) => `${entity}Schema`,
+};
+```
+
+The configuration file supports all generator options. CLI arguments take precedence over config file options.
+
 ### 🚀 Use Schemas
 
 ```typescript

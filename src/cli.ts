@@ -4,8 +4,9 @@ import { Command } from "commander";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadConfig } from "./config.js";
 import contentfulZodGenerator from "./index.js";
-import { GeneratorOptions } from "./types.js";
+import { ContentfulToZodOptions } from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,7 +17,7 @@ const { version } = require(join(__dirname, "../package.json"));
  * Main entry point for the CLI application
  * Parses command line arguments and generates Zod schemas from Contentful content types
  */
-function main(): void {
+async function main(): Promise<void> {
   const program = new Command()
     .name("contentful-to-zod")
     .description("Generate Zod schemas from Contentful content types")
@@ -43,7 +44,13 @@ function main(): void {
 
   program.parse();
 
-  const options = program.opts<GeneratorOptions>();
+  const cliOptions = program.opts<ContentfulToZodOptions>();
+  const configOptions = await loadConfig();
+
+  const options = {
+    ...configOptions,
+    ...cliOptions,
+  } satisfies ContentfulToZodOptions;
 
   try {
     contentfulZodGenerator(options);
