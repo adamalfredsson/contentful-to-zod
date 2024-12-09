@@ -9,13 +9,13 @@
         "sys": {
           "type": "Link",
           "linkType": "Space",
-          "id": "4jw5bnf8o5lk"
+          "id": "acme"
         }
       },
-      "id": "7ggptzDT5G5ixadvFsOGVo",
+      "id": "4lwBiOt31GgQQaxIDqqB2N",
       "type": "Entry",
-      "createdAt": "2024-12-06T13:56:32.494Z",
-      "updatedAt": "2024-12-06T13:56:32.494Z",
+      "createdAt": "2024-12-09T08:38:04.757Z",
+      "updatedAt": "2024-12-09T12:49:33.072Z",
       "environment": {
         "sys": {
           "id": "master",
@@ -23,8 +23,8 @@
           "linkType": "Environment"
         }
       },
-      "publishedVersion": 4,
-      "revision": 1,
+      "publishedVersion": 12,
+      "revision": 5,
       "contentType": {
         "sys": {
           "type": "Link",
@@ -36,6 +36,8 @@
     },
     "fields": {
       "breadcrumbs": false,
+      "breadcrumbLabel": "Hem",
+      "path": "/",
       "hero": {
         "metadata": {
           "tags": [],
@@ -46,13 +48,13 @@
             "sys": {
               "type": "Link",
               "linkType": "Space",
-              "id": "4jw5bnf8o5lk"
+              "id": "acme"
             }
           },
-          "id": "6TQpwm8tDTHmcMXdu2aAzj",
+          "id": "2WMFoZBkOfyXRKw3qixKbB",
           "type": "Entry",
-          "createdAt": "2024-12-06T13:51:34.855Z",
-          "updatedAt": "2024-12-06T13:51:34.855Z",
+          "createdAt": "2024-12-08T19:14:05.190Z",
+          "updatedAt": "2024-12-08T19:14:05.190Z",
           "environment": {
             "sys": {
               "id": "master",
@@ -72,7 +74,7 @@
           "locale": "sv-SE"
         },
         "fields": {
-          "title": "Hero",
+          "title": "Växla till växtbaserat",
           "body": {
             "data": {},
             "content": [
@@ -82,29 +84,7 @@
                   {
                     "data": {},
                     "marks": [],
-                    "value": "Hero description",
-                    "nodeType": "text"
-                  }
-                ],
-                "nodeType": "paragraph"
-              },
-              {
-                "data": {},
-                "content": [
-                  {
-                    "data": {},
-                    "marks": [],
-                    "value": "With ",
-                    "nodeType": "text"
-                  },
-                  {
-                    "data": {},
-                    "marks": [
-                      {
-                        "type": "bold"
-                      }
-                    ],
-                    "value": "bold text",
+                    "value": "Plant-Based Resources är precis vad det låter som, vi är ett företag som enbart fokuserar på att implementera och utveckla resurser som företag kan använda för att accelerera mot mer växtbaserat.",
                     "nodeType": "text"
                   }
                 ],
@@ -123,13 +103,13 @@
                 "sys": {
                   "type": "Link",
                   "linkType": "Space",
-                  "id": "4jw5bnf8o5lk"
+                  "id": "acme"
                 }
               },
-              "id": "1TMG7xzkgU5lBDqS2dAuRY",
+              "id": "3lIgsjv2CDsbIMdF1h2rXY",
               "type": "Entry",
-              "createdAt": "2024-12-06T13:51:30.685Z",
-              "updatedAt": "2024-12-06T13:51:30.685Z",
+              "createdAt": "2024-12-08T19:13:44.912Z",
+              "updatedAt": "2024-12-08T19:13:44.912Z",
               "environment": {
                 "sys": {
                   "id": "master",
@@ -137,7 +117,7 @@
                   "linkType": "Environment"
                 }
               },
-              "publishedVersion": 2,
+              "publishedVersion": 3,
               "revision": 1,
               "contentType": {
                 "sys": {
@@ -149,8 +129,8 @@
               "locale": "sv-SE"
             },
             "fields": {
-              "label": "Click me!",
-              "href": "/test"
+              "label": "Kontakta oss",
+              "href": "https://acmeresources.se/kontakta-oss"
             }
           }
         }
@@ -166,13 +146,13 @@
               "sys": {
                 "type": "Link",
                 "linkType": "Space",
-                "id": "4jw5bnf8o5lk"
+                "id": "acme"
               }
             },
-            "id": "2G44hj6jLu6mqaETgiFez",
+            "id": "3yXjNnFRcU3RWUoNgrjqVG",
             "type": "Entry",
-            "createdAt": "2024-12-06T13:56:27.830Z",
-            "updatedAt": "2024-12-06T13:56:27.830Z",
+            "createdAt": "2024-12-09T08:38:01.885Z",
+            "updatedAt": "2024-12-09T08:38:01.885Z",
             "environment": {
               "sys": {
                 "id": "master",
@@ -180,7 +160,7 @@
                 "linkType": "Environment"
               }
             },
-            "publishedVersion": 5,
+            "publishedVersion": 3,
             "revision": 1,
             "contentType": {
               "sys": {
@@ -202,13 +182,13 @@
                   "sys": {
                     "type": "Link",
                     "linkType": "Space",
-                    "id": "4jw5bnf8o5lk"
+                    "id": "acme"
                   }
                 },
-                "id": "1VcUnwC1gGu22JmBhjGTPt",
+                "id": "C2rFq6aSL4yJ4QzMIGvJd",
                 "type": "Entry",
-                "createdAt": "2024-12-06T13:56:24.063Z",
-                "updatedAt": "2024-12-06T13:56:24.063Z",
+                "createdAt": "2024-12-09T08:36:38.213Z",
+                "updatedAt": "2024-12-09T08:36:38.213Z",
                 "environment": {
                   "sys": {
                     "id": "master",
@@ -216,36 +196,252 @@
                     "linkType": "Environment"
                   }
                 },
-                "publishedVersion": 2,
+                "publishedVersion": 5,
                 "revision": 1,
                 "contentType": {
                   "sys": {
                     "type": "Link",
                     "linkType": "ContentType",
-                    "id": "contentCard"
+                    "id": "marketingBannerCard"
                   }
                 },
                 "locale": "sv-SE"
               },
               "fields": {
-                "title": "Content",
+                "title": "Positionera er rätt och nå resultat",
                 "body": {
-                  "nodeType": "document",
                   "data": {},
                   "content": [
                     {
-                      "nodeType": "paragraph",
                       "data": {},
                       "content": [
                         {
-                          "nodeType": "text",
-                          "value": "Some content",
+                          "data": {},
                           "marks": [],
-                          "data": {}
+                          "value": "Få skräddarsydd vägledning för att framgångsrikt marknadsföra era växtbaserade produkter!",
+                          "nodeType": "text"
                         }
-                      ]
+                      ],
+                      "nodeType": "paragraph"
                     }
-                  ]
+                  ],
+                  "nodeType": "document"
+                },
+                "cta": {
+                  "metadata": {
+                    "tags": [],
+                    "concepts": []
+                  },
+                  "sys": {
+                    "space": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "acme"
+                      }
+                    },
+                    "id": "6k1ndGO5kC9tvz48cgxLRn",
+                    "type": "Entry",
+                    "createdAt": "2024-12-09T08:35:19.250Z",
+                    "updatedAt": "2024-12-09T08:35:19.250Z",
+                    "environment": {
+                      "sys": {
+                        "id": "master",
+                        "type": "Link",
+                        "linkType": "Environment"
+                      }
+                    },
+                    "publishedVersion": 2,
+                    "revision": 1,
+                    "contentType": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "link"
+                      }
+                    },
+                    "locale": "sv-SE"
+                  },
+                  "fields": {
+                    "label": "Läs mer",
+                    "href": "https://acmeresources.se/"
+                  }
+                },
+                "imageStack": {
+                  "metadata": {
+                    "tags": [],
+                    "concepts": []
+                  },
+                  "sys": {
+                    "space": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "acme"
+                      }
+                    },
+                    "id": "XAqXR1Ls1ILe3IQjKHpLw",
+                    "type": "Entry",
+                    "createdAt": "2024-12-09T08:50:57.707Z",
+                    "updatedAt": "2024-12-09T08:50:57.707Z",
+                    "environment": {
+                      "sys": {
+                        "id": "master",
+                        "type": "Link",
+                        "linkType": "Environment"
+                      }
+                    },
+                    "publishedVersion": 7,
+                    "revision": 1,
+                    "contentType": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "imageStack3"
+                      }
+                    },
+                    "locale": "sv-SE"
+                  },
+                  "fields": {
+                    "images": [
+                      {
+                        "metadata": {
+                          "tags": [],
+                          "concepts": []
+                        },
+                        "sys": {
+                          "space": {
+                            "sys": {
+                              "type": "Link",
+                              "linkType": "Space",
+                              "id": "acme"
+                            }
+                          },
+                          "id": "3vFkjc6tZxROvTGTwzBVMr",
+                          "type": "Asset",
+                          "createdAt": "2024-12-09T08:49:55.134Z",
+                          "updatedAt": "2024-12-09T08:49:55.134Z",
+                          "environment": {
+                            "sys": {
+                              "id": "master",
+                              "type": "Link",
+                              "linkType": "Environment"
+                            }
+                          },
+                          "publishedVersion": 3,
+                          "revision": 1,
+                          "locale": "sv-SE"
+                        },
+                        "fields": {
+                          "title": "acme-start-marknadsforing-1",
+                          "description": "",
+                          "file": {
+                            "url": "//images.ctfassets.net/acme/3vFkjc6tZxROvTGTwzBVMr/a5384949d59f59fa2bd90c4702a098f1/acme-start-marknadsforing-1.jpg",
+                            "details": {
+                              "size": 1455966,
+                              "image": {
+                                "width": 1600,
+                                "height": 1067
+                              }
+                            },
+                            "fileName": "acme-start-marknadsforing-1.jpg",
+                            "contentType": "image/jpeg"
+                          }
+                        }
+                      },
+                      {
+                        "metadata": {
+                          "tags": [],
+                          "concepts": []
+                        },
+                        "sys": {
+                          "space": {
+                            "sys": {
+                              "type": "Link",
+                              "linkType": "Space",
+                              "id": "acme"
+                            }
+                          },
+                          "id": "5JCor1lwLjPO31w3XOT3IL",
+                          "type": "Asset",
+                          "createdAt": "2024-12-09T08:50:31.015Z",
+                          "updatedAt": "2024-12-09T08:50:31.015Z",
+                          "environment": {
+                            "sys": {
+                              "id": "master",
+                              "type": "Link",
+                              "linkType": "Environment"
+                            }
+                          },
+                          "publishedVersion": 3,
+                          "revision": 1,
+                          "locale": "sv-SE"
+                        },
+                        "fields": {
+                          "title": "acme-start-marknadsforing-2",
+                          "description": "",
+                          "file": {
+                            "url": "//images.ctfassets.net/acme/5JCor1lwLjPO31w3XOT3IL/9205e5f9e65e8fda764287ccf3d1146c/acme-start-marknadsforing-2.jpg",
+                            "details": {
+                              "size": 886068,
+                              "image": {
+                                "width": 1600,
+                                "height": 1067
+                              }
+                            },
+                            "fileName": "acme-start-marknadsforing-2.jpg",
+                            "contentType": "image/jpeg"
+                          }
+                        }
+                      },
+                      {
+                        "metadata": {
+                          "tags": [],
+                          "concepts": []
+                        },
+                        "sys": {
+                          "space": {
+                            "sys": {
+                              "type": "Link",
+                              "linkType": "Space",
+                              "id": "acme"
+                            }
+                          },
+                          "id": "acme",
+                          "type": "Asset",
+                          "createdAt": "2024-12-09T08:50:52.211Z",
+                          "updatedAt": "2024-12-09T08:50:52.211Z",
+                          "environment": {
+                            "sys": {
+                              "id": "master",
+                              "type": "Link",
+                              "linkType": "Environment"
+                            }
+                          },
+                          "publishedVersion": 3,
+                          "revision": 1,
+                          "locale": "sv-SE"
+                        },
+                        "fields": {
+                          "title": "acme-start-marknadsforing-3",
+                          "description": "",
+                          "file": {
+                            "url": "//images.ctfassets.net/acme/acme/acme/acme-start-marknadsforing-3.jpg",
+                            "details": {
+                              "size": 1071831,
+                              "image": {
+                                "width": 1285,
+                                "height": 857
+                              }
+                            },
+                            "fileName": "acme-start-marknadsforing-3.jpg",
+                            "contentType": "image/jpeg"
+                          }
+                        }
+                      }
+                    ],
+                    "border": false
+                  }
                 }
               }
             },
@@ -259,13 +455,13 @@
                   "sys": {
                     "type": "Link",
                     "linkType": "Space",
-                    "id": "4jw5bnf8o5lk"
+                    "id": "acme"
                   }
                 },
-                "id": "NZzIxc8YSXR00w3kdozui",
+                "id": "3Ax9IbMge2YVmfDA52rv4X",
                 "type": "Entry",
-                "createdAt": "2024-12-06T13:55:33.021Z",
-                "updatedAt": "2024-12-06T13:55:33.021Z",
+                "createdAt": "2024-12-09T08:37:57.690Z",
+                "updatedAt": "2024-12-09T08:37:57.690Z",
                 "environment": {
                   "sys": {
                     "id": "master",
@@ -273,19 +469,92 @@
                     "linkType": "Environment"
                   }
                 },
-                "publishedVersion": 2,
+                "publishedVersion": 5,
                 "revision": 1,
                 "contentType": {
                   "sys": {
                     "type": "Link",
                     "linkType": "ContentType",
-                    "id": "imageCard"
+                    "id": "contentCard"
                   }
                 },
                 "locale": "sv-SE"
               },
               "fields": {
-                "img": {
+                "title": "Servera mer växtbaserat med våra optimerande tester",
+                "body": {
+                  "data": {},
+                  "content": [
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "data": {},
+                          "marks": [],
+                          "value": "Testa våra beprövade metoder och öka serveringen av växtbaserade alternativ ",
+                          "nodeType": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph"
+                    },
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "data": {},
+                          "content": [
+                            {
+                              "data": {},
+                              "content": [
+                                {
+                                  "data": {},
+                                  "marks": [],
+                                  "value": "Djupdyk i 4 nudgingmetoder",
+                                  "nodeType": "text"
+                                }
+                              ],
+                              "nodeType": "paragraph"
+                            }
+                          ],
+                          "nodeType": "list-item"
+                        },
+                        {
+                          "data": {},
+                          "content": [
+                            {
+                              "data": {},
+                              "content": [
+                                {
+                                  "data": {},
+                                  "marks": [],
+                                  "value": "Få stöd med implementering",
+                                  "nodeType": "text"
+                                }
+                              ],
+                              "nodeType": "paragraph"
+                            }
+                          ],
+                          "nodeType": "list-item"
+                        }
+                      ],
+                      "nodeType": "unordered-list"
+                    },
+                    {
+                      "data": {},
+                      "content": [
+                        {
+                          "data": {},
+                          "marks": [],
+                          "value": "",
+                          "nodeType": "text"
+                        }
+                      ],
+                      "nodeType": "paragraph"
+                    }
+                  ],
+                  "nodeType": "document"
+                },
+                "cta": {
                   "metadata": {
                     "tags": [],
                     "concepts": []
@@ -295,13 +564,13 @@
                       "sys": {
                         "type": "Link",
                         "linkType": "Space",
-                        "id": "4jw5bnf8o5lk"
+                        "id": "acme"
                       }
                     },
-                    "id": "20syGvKyOjHEei5Jc9sI3D",
-                    "type": "Asset",
-                    "createdAt": "2024-12-06T13:54:42.970Z",
-                    "updatedAt": "2024-12-06T13:54:50.466Z",
+                    "id": "3f5EZFZEQi4RBzezUIyqYg",
+                    "type": "Entry",
+                    "createdAt": "2024-12-09T08:37:38.170Z",
+                    "updatedAt": "2024-12-09T08:37:38.170Z",
                     "environment": {
                       "sys": {
                         "id": "master",
@@ -309,32 +578,508 @@
                         "linkType": "Environment"
                       }
                     },
-                    "publishedVersion": 6,
-                    "revision": 2,
+                    "publishedVersion": 2,
+                    "revision": 1,
+                    "contentType": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "link"
+                      }
+                    },
                     "locale": "sv-SE"
                   },
                   "fields": {
-                    "title": "Stora holm",
-                    "description": "Stora holm",
-                    "file": {
-                      "url": "//images.ctfassets.net/4jw5bnf8o5lk/20syGvKyOjHEei5Jc9sI3D/35d4958efeec30a5ce3719c735095609/3d8f5179-7c30-40af-ab14-be0403867e7c.jpg",
-                      "details": {
-                        "size": 102861,
-                        "image": {
-                          "width": 653,
-                          "height": 653
-                        }
-                      },
-                      "fileName": "3d8f5179-7c30-40af-ab14-be0403867e7c.jpg",
-                      "contentType": "image/jpeg"
-                    }
+                    "label": "Lär dig om tjänsten",
+                    "href": "https://acmeresources.se/"
                   }
                 }
               }
             }
           }
         }
-      ]
+      ],
+      "layout": {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "acme"
+            }
+          },
+          "id": "dqkUWPGoEZaJy1mcL0H7P",
+          "type": "Entry",
+          "createdAt": "2024-12-09T12:47:30.604Z",
+          "updatedAt": "2024-12-09T12:47:30.604Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 4,
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "layout"
+            }
+          },
+          "locale": "sv-SE"
+        },
+        "fields": {
+          "header": {
+            "metadata": {
+              "tags": [],
+              "concepts": []
+            },
+            "sys": {
+              "space": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "Space",
+                  "id": "acme"
+                }
+              },
+              "id": "3Ixn5IBcKsSRai0wsDtvfK",
+              "type": "Entry",
+              "createdAt": "2024-12-09T12:43:49.346Z",
+              "updatedAt": "2024-12-09T12:43:49.346Z",
+              "environment": {
+                "sys": {
+                  "id": "master",
+                  "type": "Link",
+                  "linkType": "Environment"
+                }
+              },
+              "publishedVersion": 3,
+              "revision": 1,
+              "contentType": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "ContentType",
+                  "id": "header"
+                }
+              },
+              "locale": "sv-SE"
+            },
+            "fields": {
+              "links": [
+                {
+                  "metadata": {
+                    "tags": [],
+                    "concepts": []
+                  },
+                  "sys": {
+                    "space": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "acme"
+                      }
+                    },
+                    "id": "7mcUDxC5YxWeVFqrHFR3cY",
+                    "type": "Entry",
+                    "createdAt": "2024-12-09T12:43:31.138Z",
+                    "updatedAt": "2024-12-09T12:43:31.138Z",
+                    "environment": {
+                      "sys": {
+                        "id": "master",
+                        "type": "Link",
+                        "linkType": "Environment"
+                      }
+                    },
+                    "publishedVersion": 2,
+                    "revision": 1,
+                    "contentType": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "shortLink"
+                      }
+                    },
+                    "locale": "sv-SE"
+                  },
+                  "fields": {
+                    "label": "Om"
+                  }
+                }
+              ],
+              "cta": {
+                "metadata": {
+                  "tags": [],
+                  "concepts": []
+                },
+                "sys": {
+                  "space": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "Space",
+                      "id": "acme"
+                    }
+                  },
+                  "id": "2XZK6D8C2qJua5BS2heGKd",
+                  "type": "Entry",
+                  "createdAt": "2024-12-09T12:43:45.656Z",
+                  "updatedAt": "2024-12-09T12:43:45.656Z",
+                  "environment": {
+                    "sys": {
+                      "id": "master",
+                      "type": "Link",
+                      "linkType": "Environment"
+                    }
+                  },
+                  "publishedVersion": 2,
+                  "revision": 1,
+                  "contentType": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "ContentType",
+                      "id": "shortLink"
+                    }
+                  },
+                  "locale": "sv-SE"
+                },
+                "fields": {
+                  "label": "Kontakta oss"
+                }
+              }
+            }
+          },
+          "footer": {
+            "metadata": {
+              "tags": [],
+              "concepts": []
+            },
+            "sys": {
+              "space": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "Space",
+                  "id": "acme"
+                }
+              },
+              "id": "7rOjzD1GMEyRtfVqYZWmyk",
+              "type": "Entry",
+              "createdAt": "2024-12-09T12:47:24.587Z",
+              "updatedAt": "2024-12-09T12:47:24.587Z",
+              "environment": {
+                "sys": {
+                  "id": "master",
+                  "type": "Link",
+                  "linkType": "Environment"
+                }
+              },
+              "publishedVersion": 12,
+              "revision": 1,
+              "contentType": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "ContentType",
+                  "id": "footer"
+                }
+              },
+              "locale": "sv-SE"
+            },
+            "fields": {
+              "title": "Ta klivet",
+              "subtitle": "Är du redo att växla till växtbaserat?",
+              "cta": {
+                "metadata": {
+                  "tags": [],
+                  "concepts": []
+                },
+                "sys": {
+                  "space": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "Space",
+                      "id": "acme"
+                    }
+                  },
+                  "id": "6bFZzIgMrCiCWLr82Oht0D",
+                  "type": "Entry",
+                  "createdAt": "2024-12-09T12:47:20.098Z",
+                  "updatedAt": "2024-12-09T12:47:20.098Z",
+                  "environment": {
+                    "sys": {
+                      "id": "master",
+                      "type": "Link",
+                      "linkType": "Environment"
+                    }
+                  },
+                  "publishedVersion": 2,
+                  "revision": 1,
+                  "contentType": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "ContentType",
+                      "id": "link"
+                    }
+                  },
+                  "locale": "sv-SE"
+                },
+                "fields": {
+                  "label": "Klick"
+                }
+              },
+              "ctaBody": {
+                "nodeType": "document",
+                "data": {},
+                "content": [
+                  {
+                    "nodeType": "paragraph",
+                    "data": {},
+                    "content": [
+                      {
+                        "nodeType": "text",
+                        "value": "Test",
+                        "marks": [],
+                        "data": {}
+                      }
+                    ]
+                  }
+                ]
+              },
+              "addressTitle": "Plant-Based Resources",
+              "addressEmail": {
+                "metadata": {
+                  "tags": [],
+                  "concepts": []
+                },
+                "sys": {
+                  "space": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "Space",
+                      "id": "acme"
+                    }
+                  },
+                  "id": "4FV8rTbj0yyxTRZeCS75v6",
+                  "type": "Entry",
+                  "createdAt": "2024-12-09T12:45:04.428Z",
+                  "updatedAt": "2024-12-09T12:45:04.428Z",
+                  "environment": {
+                    "sys": {
+                      "id": "master",
+                      "type": "Link",
+                      "linkType": "Environment"
+                    }
+                  },
+                  "publishedVersion": 2,
+                  "revision": 1,
+                  "contentType": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "ContentType",
+                      "id": "link"
+                    }
+                  },
+                  "locale": "sv-SE"
+                },
+                "fields": {
+                  "label": "info@acmeresources.se",
+                  "href": "mailto:info@acmeresources.se"
+                }
+              },
+              "addressPhone": {
+                "metadata": {
+                  "tags": [],
+                  "concepts": []
+                },
+                "sys": {
+                  "space": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "Space",
+                      "id": "acme"
+                    }
+                  },
+                  "id": "7nnD8LcaKSazw5c9amHDG6",
+                  "type": "Entry",
+                  "createdAt": "2024-12-09T12:45:35.343Z",
+                  "updatedAt": "2024-12-09T12:45:35.343Z",
+                  "environment": {
+                    "sys": {
+                      "id": "master",
+                      "type": "Link",
+                      "linkType": "Environment"
+                    }
+                  },
+                  "publishedVersion": 4,
+                  "revision": 1,
+                  "contentType": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "ContentType",
+                      "id": "link"
+                    }
+                  },
+                  "locale": "sv-SE"
+                },
+                "fields": {
+                  "label": "Test",
+                  "href": "test"
+                }
+              },
+              "addressOrg": "553333-7744",
+              "linksTitle": "Våra tjänster",
+              "linksItems": [
+                {
+                  "metadata": {
+                    "tags": [],
+                    "concepts": []
+                  },
+                  "sys": {
+                    "space": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "Space",
+                        "id": "acme"
+                      }
+                    },
+                    "id": "5O4PFdAG3KVeaOeDc9wJQx",
+                    "type": "Entry",
+                    "createdAt": "2024-12-09T12:46:35.814Z",
+                    "updatedAt": "2024-12-09T12:46:35.814Z",
+                    "environment": {
+                      "sys": {
+                        "id": "master",
+                        "type": "Link",
+                        "linkType": "Environment"
+                      }
+                    },
+                    "publishedVersion": 2,
+                    "revision": 1,
+                    "contentType": {
+                      "sys": {
+                        "type": "Link",
+                        "linkType": "ContentType",
+                        "id": "link"
+                      }
+                    },
+                    "locale": "sv-SE"
+                  },
+                  "fields": {
+                    "label": "Hjälp med marknadsföring"
+                  }
+                }
+              ],
+              "aboutTitle": "10 år i vegorörelsen!",
+              "aboutBody": {
+                "data": {},
+                "content": [
+                  {
+                    "data": {},
+                    "content": [
+                      {
+                        "data": {},
+                        "marks": [],
+                        "value": "Med 10 års erfarenhet inom vegorörelsen vill vi nu hjälpa företag att applicera den senaste forskningen för att optimera försäljningen eller öka serveringen av växtbaserat mat.",
+                        "nodeType": "text"
+                      }
+                    ],
+                    "nodeType": "paragraph"
+                  }
+                ],
+                "nodeType": "document"
+              },
+              "copyright": "2024 Acme"
+            }
+          },
+          "seo": {
+            "metadata": {
+              "tags": [],
+              "concepts": []
+            },
+            "sys": {
+              "space": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "Space",
+                  "id": "acme"
+                }
+              },
+              "id": "4ULvUu8fr3Olkh5I5QRnYj",
+              "type": "Entry",
+              "createdAt": "2024-12-09T12:46:02.250Z",
+              "updatedAt": "2024-12-09T12:46:02.250Z",
+              "environment": {
+                "sys": {
+                  "id": "master",
+                  "type": "Link",
+                  "linkType": "Environment"
+                }
+              },
+              "publishedVersion": 3,
+              "revision": 1,
+              "contentType": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "ContentType",
+                  "id": "seo"
+                }
+              },
+              "locale": "sv-SE"
+            },
+            "fields": {
+              "title": "Acme",
+              "image": {
+                "metadata": {
+                  "tags": [],
+                  "concepts": []
+                },
+                "sys": {
+                  "space": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "Space",
+                      "id": "acme"
+                    }
+                  },
+                  "id": "acme",
+                  "type": "Asset",
+                  "createdAt": "2024-12-09T08:50:52.211Z",
+                  "updatedAt": "2024-12-09T08:50:52.211Z",
+                  "environment": {
+                    "sys": {
+                      "id": "master",
+                      "type": "Link",
+                      "linkType": "Environment"
+                    }
+                  },
+                  "publishedVersion": 3,
+                  "revision": 1,
+                  "locale": "sv-SE"
+                },
+                "fields": {
+                  "title": "acme-start-marknadsforing-3",
+                  "description": "",
+                  "file": {
+                    "url": "//images.ctfassets.net/acme/acme/acme/acme-start-marknadsforing-3.jpg",
+                    "details": {
+                      "size": 1071831,
+                      "image": {
+                        "width": 1285,
+                        "height": 857
+                      }
+                    },
+                    "fileName": "acme-start-marknadsforing-3.jpg",
+                    "contentType": "image/jpeg"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 ]
