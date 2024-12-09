@@ -279,5 +279,5 @@ export function generateTypeScriptFile(
 }
 
 function toBaseSchemaName(contentTypeId: string): string {
-  return `base${toPascalCase(contentTypeId)}`;
+  return `_base${toPascalCase(contentTypeId)}`;
 }
