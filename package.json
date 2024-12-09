@@ -2,6 +2,13 @@
   "name": "contentful-to-zod",
   "version": "4.2.1",
   "description": "Generate Zod schemas from Contentful content types",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adamalfredsson/contentful-to-zod.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adamalfredsson/contentful-to-zod/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -31,7 +38,7 @@
     "schema",
     "validation"
   ],
-  "author": "",
+  "author": "Adam Alfredsson <adam@zodiapps.com>",
   "license": "MIT",
   "dependencies": {
     "commander": "^12.1.0",
