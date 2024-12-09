@@ -186,7 +186,7 @@ const _baseFooter = z.object({
     addressPhone: z.unknown(),
     addressOrg: z.string(),
     linksTitle: z.string(),
-    linksItems: z.array(z.unknown()),
+    linksItems: z.unknown(),
     aboutTitle: z.string(),
     aboutBody: contentfulRichTextSchema,
     aboutCta: z.unknown(),
@@ -199,6 +199,7 @@ export type Footer = z.infer<typeof _baseFooter> & {
     cta: Link;
     addressEmail: Link;
     addressPhone: Link;
+    linksItems: Link[];
     aboutCta?: Link | undefined;
   };
 };
@@ -208,6 +209,7 @@ export const footerSchema: z.ZodType<Footer> = _baseFooter.extend({
     cta: z.lazy(() => linkSchema),
     addressEmail: z.lazy(() => linkSchema),
     addressPhone: z.lazy(() => linkSchema),
+    linksItems: z.lazy(() => z.array(linkSchema)),
     aboutCta: z.lazy(() => linkSchema).optional(),
   }),
 });
@@ -221,17 +223,18 @@ const _baseHeader = z.object({
     }),
   }),
   fields: z.object({
-    links: z.array(z.unknown()),
+    links: z.unknown(),
     cta: z.unknown(),
   }),
 });
 
 export type Header = z.infer<typeof _baseHeader> & {
-  fields: { cta: ShortLink };
+  fields: { links: ShortLink[]; cta: ShortLink };
 };
 
 export const headerSchema: z.ZodType<Header> = _baseHeader.extend({
   fields: _baseHeader.shape.fields.extend({
+    links: z.lazy(() => z.array(shortLinkSchema)),
     cta: z.lazy(() => shortLinkSchema),
   }),
 });
@@ -606,19 +609,34 @@ const _basePage = z.object({
     breadcrumbLabel: z.string().optional(),
     path: z.string(),
     hero: z.unknown(),
-    content: z.array(z.unknown()),
+    content: z.unknown(),
     seo: z.unknown(),
     layout: z.unknown(),
   }),
 });
 
 export type Page = z.infer<typeof _basePage> & {
-  fields: { hero: Hero; seo?: SEO | undefined; layout: Layout };
+  fields: {
+    hero: Hero;
+    content: (BentoRow1 | BentoRow2 | BentoRow3 | BentoRow4)[];
+    seo?: SEO | undefined;
+    layout: Layout;
+  };
 };
 
 export const pageSchema: z.ZodType<Page> = _basePage.extend({
   fields: _basePage.shape.fields.extend({
     hero: z.lazy(() => heroSchema),
+    content: z.lazy(() =>
+      z.array(
+        z.union([
+          bentoRow1Schema,
+          bentoRow2Schema,
+          bentoRow3Schema,
+          bentoRow4Schema,
+        ])
+      )
+    ),
     seo: z.lazy(() => seoSchema).optional(),
     layout: z.lazy(() => layoutSchema),
   }),

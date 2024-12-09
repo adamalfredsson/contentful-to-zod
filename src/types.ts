@@ -54,13 +54,7 @@ export interface ContentfulSchema {
   roles: any[];
 }
 
-export type TransformerConfig = {
-  /**
-   * Whether to allow unknown keys in objects
-   * @default false
-   */
-  passthrough?: boolean;
-
+type SharedConfig = {
   /**
    * Whether to abort on unsupported types instead of using z.unknown()
    * @default false
@@ -68,16 +62,14 @@ export type TransformerConfig = {
   abortOnUnknown?: boolean;
 };
 
-export type ContentfulToZodOptions = TransformerConfig & {
-  /**
-   * Path to the input Contentful schema JSON file
-   */
-  input: string;
+export type TransformerConfig = SharedConfig & {};
 
+export type PrintConfig = SharedConfig & {
   /**
-   * Path where the generated TypeScript file should be written
+   * Whether to allow unknown keys in objects
+   * @default false
    */
-  output: string;
+  passthrough?: boolean;
 
   /**
    * Whether to generate flat schemas
@@ -88,3 +80,16 @@ export type ContentfulToZodOptions = TransformerConfig & {
   toTypeName?: (entity: string) => string;
   toSchemaName?: (entity: string) => string;
 };
+
+export type ContentfulToZodOptions = TransformerConfig &
+  PrintConfig & {
+    /**
+     * Path to the input Contentful schema JSON file
+     */
+    input: string;
+
+    /**
+     * Path where the generated TypeScript file should be written
+     */
+    output: string;
+  };

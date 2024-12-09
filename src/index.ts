@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { generateTypeScriptFile } from "./parser.js";
+import { printTypescriptSchemas } from "./parser.js";
 import { generateContentfulZodSchemas } from "./transformer.js";
 import type { ContentfulSchema, ContentfulToZodOptions } from "./types.js";
 
@@ -11,7 +11,9 @@ export default function contentfulZodGenerator(
   );
 
   const schemas = generateContentfulZodSchemas(contentfulSchema, options);
-  generateTypeScriptFile(schemas, options);
+  const content = printTypescriptSchemas(schemas, options);
+
+  fs.writeFileSync(options.output, content, "utf-8");
 }
 
 export {

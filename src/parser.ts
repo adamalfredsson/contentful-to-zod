@@ -1,10 +1,9 @@
-import fs from "node:fs";
 import { z } from "zod";
 import { isZodSchemaWithInternalReference } from "./augments/internal.js";
 import { isZodSchemaWithReferences } from "./augments/reference.js";
 import { internalSchemas } from "./schemas/index.js";
 import { richTextSchema } from "./schemas/rich-text.js";
-import { ContentfulToZodOptions } from "./types.js";
+import { PrintConfig } from "./types.js";
 import { unique } from "./utils/array.js";
 import { toPascalCase } from "./utils/string.js";
 
@@ -143,7 +142,7 @@ function findInternalReferences(schema: unknown): string[] {
  * @param options
  * @returns
  */
-function resolveConfig(options: ContentfulToZodOptions) {
+function resolveConfig(options: PrintConfig) {
   return {
     toTypeName(contentTypeId: string): string {
       return toPascalCase(contentTypeId);
@@ -159,20 +158,20 @@ function resolveConfig(options: ContentfulToZodOptions) {
 type ResolvedGeneratorConfig = ReturnType<typeof resolveConfig>;
 
 /**
- * Generates a TypeScript file containing Zod schema definitions and their types
+ * Generates TypeScript file content containing Zod schema definitions and their types
  * @param schemas - Record of schema names to their Zod schema objects
- * @param options - Generator configuration options
+ * @param config - Print configuration options
  */
-export function generateTypeScriptFile(
+export function printTypescriptSchemas(
   schemas: Record<
     string,
     z.ZodObject<{
       fields: z.ZodObject<z.ZodRawShape>;
     }>
   >,
-  options: ContentfulToZodOptions
-): void {
-  const config = resolveConfig(options);
+  config: PrintConfig
+): string {
+  const resolvedConfig = resolveConfig(config);
 
   const internalReferences = unique(
     Object.values(schemas).flatMap(findInternalReferences)
@@ -196,15 +195,15 @@ export function generateTypeScriptFile(
       }
 
       return [
-        `export const ${config.toSchemaName(reference)} = ${zodToString(
+        `export const ${resolvedConfig.toSchemaName(reference)} = ${zodToString(
           schema,
           {
-            ...config,
+            ...resolvedConfig,
             flat: true,
           }
         )}${schema._typeCast ? ` as z.ZodType<${schema._typeCast}>` : ""};`,
 
-        `export type ${config.toTypeName(reference)} = z.infer<typeof ${config.toSchemaName(reference)}>;`,
+        `export type ${resolvedConfig.toTypeName(reference)} = z.infer<typeof ${resolvedConfig.toSchemaName(reference)}>;`,
       ].join("\n\n");
     })
     .join("\n\n");
@@ -213,12 +212,12 @@ export function generateTypeScriptFile(
     .map(([name, schema]) => {
       const fieldReferences = Object.entries(schema.shape.fields.shape).reduce(
         (acc, [field, value]) => {
-          if (
-            isZodSchemaWithReferences(value) &&
-            value._references.length > 0
-          ) {
+          const references = isZodSchemaWithReferences(value)
+            ? value._references
+            : [];
+          if (references.length > 0) {
             acc.set(field, {
-              types: value._references,
+              types: references,
               multiple:
                 "typeName" in value._def && value._def.typeName === "ZodArray",
               optional:
@@ -235,21 +234,21 @@ export function generateTypeScriptFile(
       );
 
       return [
-        `const ${toBaseSchemaName(name)} = ${zodToString(schema, config)};`,
+        `const ${toBaseSchemaName(name)} = ${zodToString(schema, resolvedConfig)};`,
 
-        `export type ${config.toTypeName(name)} = z.infer<typeof ${toBaseSchemaName(
+        `export type ${resolvedConfig.toTypeName(name)} = z.infer<typeof ${toBaseSchemaName(
           name
         )}> & { fields: {${[...fieldReferences.entries()]
           .map(
             ([field, reference]) =>
               `${field}${reference.optional ? "?" : ""}: (${reference.types
-                .map(config.toTypeName)
+                .map(resolvedConfig.toTypeName)
                 .concat(reference.optional ? ["undefined"] : [])
                 .join(" | ")})${reference.multiple ? "[]" : ""}`
           )
           .join(",\n")}} };`,
 
-        `export const ${config.toSchemaName(name)}: z.ZodType<${config.toTypeName(
+        `export const ${resolvedConfig.toSchemaName(name)}: z.ZodType<${resolvedConfig.toTypeName(
           name
         )}> = ${toBaseSchemaName(name)}.extend({
           fields: ${toBaseSchemaName(name)}.shape.fields.extend({
@@ -258,9 +257,9 @@ export function generateTypeScriptFile(
                 ([field, reference]) =>
                   `${field}: z.lazy(() => ${reference.multiple ? "z.array(" : ""}${
                     reference.types.length === 1
-                      ? config.toSchemaName(reference.types[0])
+                      ? resolvedConfig.toSchemaName(reference.types[0])
                       : `z.union([${reference.types
-                          .map(config.toSchemaName)
+                          .map(resolvedConfig.toSchemaName)
                           .join(", ")}])`
                   }${reference.multiple ? ")" : ""})${reference.optional ? ".optional()" : ""}`
               )
@@ -275,7 +274,7 @@ export function generateTypeScriptFile(
     "\n\n"
   );
 
-  fs.writeFileSync(options.output, content, "utf-8");
+  return content;
 }
 
 function toBaseSchemaName(contentTypeId: string): string {
