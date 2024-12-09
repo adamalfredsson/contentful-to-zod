@@ -14,38 +14,6 @@ import {
 } from "./types.js";
 
 /**
- * Determines the field type string based on Contentful field configuration
- * @param field - Contentful field configuration containing type information
- * @returns A string representing the field type
- */
-function getFieldType(
-  field: Pick<ContentfulField, "type" | "linkType" | "items">
-): string {
-  if (field.type === "Symbol" || field.type === "Text") {
-    return "string";
-  }
-  if (field.type === "Integer" || field.type === "Number") {
-    return "number";
-  }
-  if (field.type === "Boolean") {
-    return "boolean";
-  }
-  if (field.type === "Date") {
-    return "date";
-  }
-  if (field.type === "RichText") {
-    return "richText";
-  }
-  if (field.type === "Link") {
-    return field.linkType?.toLowerCase() || "link";
-  }
-  if (field.type === "Array" && field.items) {
-    return `array:${getFieldType(field.items)}`;
-  }
-  return field.type.toLowerCase();
-}
-
-/**
  * Extracts the referenced content types from a Contentful field's validations
  * @param field - Contentful field configuration
  * @returns The IDs of the referenced content types, if any
@@ -110,69 +78,74 @@ function createSchemaReferences<TKey extends string>(
  * @param schemas - Record of already generated Zod schemas
  * @returns A Zod schema corresponding to the field type
  */
-function getZodSchemaForFieldType(
-  field: ContentfulField,
-  config: TransformerConfig
-): z.ZodType {
+function getZodSchemaForFieldType({
+  field,
+  config,
+  type = field.type,
+}: {
+  field: ContentfulField;
+  config: TransformerConfig;
+  type?: string;
+}): z.ZodType {
   let schema: z.ZodType;
-  const fieldType = getFieldType(field);
 
-  switch (fieldType) {
-    case "string":
+  switch (type) {
+    case "Symbol":
+    case "Text":
       schema = z.string();
       break;
-    case "number":
-      schema = field.type === "Integer" ? z.number().int() : z.number();
+    case "Integer":
+    case "Number":
+      schema = z.number().int();
       break;
-    case "boolean":
+    case "Boolean":
       schema = z.boolean();
       break;
-    case "date":
+    case "Date":
       schema = z.string().datetime();
       break;
-    case "richText":
+    case "RichText":
       schema = richTextSchema;
       break;
-    case "location":
+    case "Location":
       schema = locationSchema;
       break;
-    case "asset":
+    case "Asset":
       schema = mediaSchema;
       break;
-    case "entry":
+    case "Link":
+      return getZodSchemaForFieldType({ field, type: field.linkType, config });
+    case "Entry":
       const contentTypes = getReferencedContentTypes(field);
       schema = createSchemaReferences(contentTypes, false);
       break;
-    default:
-      if (fieldType.startsWith("array:")) {
-        const itemType = fieldType.split(":")[1];
-        if (itemType === "entry") {
-          const contentTypes = getReferencedContentTypes(field);
-          schema = createSchemaReferences(contentTypes, true);
-        } else if (field.items) {
-          const itemSchema = getZodSchemaForFieldType(
-            {
-              ...field.items,
-              id: `${field.id}Item`,
-              name: `${field.name}Item`,
-            },
-            config
-          );
-          schema = z.array(itemSchema);
-        } else {
-          if (config.abortOnUnknown) {
-            throw new Error("Unknown array field");
-          }
-          console.warn("Unknown array field");
-          schema = z.array(z.unknown());
-        }
-      } else {
+    case "Array":
+      if (!field.items) {
         if (config.abortOnUnknown) {
-          throw new Error(`Unsupported field type: ${fieldType}`);
+          throw new Error("Unknown array field");
         }
-        console.warn(`Unsupported field type: ${fieldType}`);
-        schema = z.unknown();
+        console.warn("Unknown array field");
+        schema = z.array(z.unknown());
+        break;
       }
+      const itemSchema = getZodSchemaForFieldType({
+        field: {
+          ...field.items,
+          id: `${field.id}Item`,
+          name: `${field.name}Item`,
+          required: true,
+        },
+        type: field.items.type,
+        config,
+      });
+      schema = z.array(itemSchema);
+      break;
+    default:
+      if (config.abortOnUnknown) {
+        throw new Error(`Unsupported field type: ${type}`);
+      }
+      console.warn(`Unsupported field type: ${type}`);
+      schema = z.unknown();
       break;
   }
 
@@ -199,7 +172,7 @@ function generateZodSchema(
   const shape: Record<string, z.ZodType> = {};
 
   for (const field of contentType.fields) {
-    shape[field.id] = getZodSchemaForFieldType(field, config);
+    shape[field.id] = getZodSchemaForFieldType({ field, config });
   }
 
   return z.object({

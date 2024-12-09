@@ -31,7 +31,7 @@ export const contentfulRichTextSchema = z.unknown() as z.ZodType<Document>;
 
 export type ContentfulRichText = z.infer<typeof contentfulRichTextSchema>;
 
-const baseLink = z.object({
+const _baseLink = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -46,17 +46,17 @@ const baseLink = z.object({
   }),
 });
 
-export type Link = z.infer<typeof baseLink> & {
+export type Link = z.infer<typeof _baseLink> & {
   fields: { page?: Page | undefined };
 };
 
-export const linkSchema: z.ZodType<Link> = baseLink.extend({
-  fields: baseLink.shape.fields.extend({
+export const linkSchema: z.ZodType<Link> = _baseLink.extend({
+  fields: _baseLink.shape.fields.extend({
     page: z.lazy(() => pageSchema).optional(),
   }),
 });
 
-const baseShortLink = z.object({
+const _baseShortLink = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -72,17 +72,17 @@ const baseShortLink = z.object({
   }),
 });
 
-export type ShortLink = z.infer<typeof baseShortLink> & {
+export type ShortLink = z.infer<typeof _baseShortLink> & {
   fields: { page?: Page | undefined };
 };
 
-export const shortLinkSchema: z.ZodType<ShortLink> = baseShortLink.extend({
-  fields: baseShortLink.shape.fields.extend({
+export const shortLinkSchema: z.ZodType<ShortLink> = _baseShortLink.extend({
+  fields: _baseShortLink.shape.fields.extend({
     page: z.lazy(() => pageSchema).optional(),
   }),
 });
 
-const baseImageStack3 = z.object({
+const _baseImageStack3 = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -91,46 +91,19 @@ const baseImageStack3 = z.object({
     }),
   }),
   fields: z.object({
-    images: z.array(
-      z
-        .object({
-          sys: z.object({
-            type: z.literal("Asset"),
-          }),
-          fields: z.object({
-            title: z.string(),
-            description: z.string(),
-            file: z.object({
-              url: z.string(),
-              details: z.object({
-                size: z.number(),
-                image: z
-                  .object({
-                    width: z.number(),
-                    height: z.number(),
-                  })
-                  .optional(),
-              }),
-              fileName: z.string(),
-              contentType: z.string(),
-            }),
-          }),
-        })
-        .optional()
-    ),
+    images: z.array(contentfulMediaSchema),
     border: z.boolean().optional(),
   }),
 });
 
-export type ImageStack3 = z.infer<typeof baseImageStack3> & { fields: {} };
+export type ImageStack3 = z.infer<typeof _baseImageStack3> & { fields: {} };
 
-export const imageStack3Schema: z.ZodType<ImageStack3> = baseImageStack3.extend(
-  {
-    fields: baseImageStack3.shape.fields.extend({}),
-  }
-);
+export const imageStack3Schema: z.ZodType<ImageStack3> =
+  _baseImageStack3.extend({
+    fields: _baseImageStack3.shape.fields.extend({}),
+  });
 
-const baseImageStack5 = z.object({
+const _baseImageStack5 = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -139,46 +112,19 @@ const baseImageStack5 = z.object({
     }),
   }),
   fields: z.object({
-    images: z.array(
-      z
-        .object({
-          sys: z.object({
-            type: z.literal("Asset"),
-          }),
-          fields: z.object({
-            title: z.string(),
-            description: z.string(),
-            file: z.object({
-              url: z.string(),
-              details: z.object({
-                size: z.number(),
-                image: z
-                  .object({
-                    width: z.number(),
-                    height: z.number(),
-                  })
-                  .optional(),
-              }),
-              fileName: z.string(),
-              contentType: z.string(),
-            }),
-          }),
-        })
-        .optional()
-    ),
+    images: z.array(contentfulMediaSchema),
     border: z.boolean().optional(),
   }),
 });
 
-export type ImageStack5 = z.infer<typeof baseImageStack5> & { fields: {} };
+export type ImageStack5 = z.infer<typeof _baseImageStack5> & { fields: {} };
 
-export const imageStack5Schema: z.ZodType<ImageStack5> = baseImageStack5.extend(
-  {
-    fields: baseImageStack5.shape.fields.extend({}),
-  }
-);
+export const imageStack5Schema: z.ZodType<ImageStack5> =
+  _baseImageStack5.extend({
+    fields: _baseImageStack5.shape.fields.extend({}),
+  });
 
-const baseSEO = z.object({
+const _baseSEO = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -193,13 +139,13 @@ const baseSEO = z.object({
   }),
 });
 
-export type SEO = z.infer<typeof baseSEO> & { fields: {} };
+export type SEO = z.infer<typeof _baseSEO> & { fields: {} };
 
-export const seoSchema: z.ZodType<SEO> = baseSEO.extend({
-  fields: baseSEO.shape.fields.extend({}),
+export const seoSchema: z.ZodType<SEO> = _baseSEO.extend({
+  fields: _baseSEO.shape.fields.extend({}),
 });
 
-const baseHero = z.object({
+const _baseHero = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -214,17 +160,17 @@ const baseHero = z.object({
   }),
 });
 
-export type Hero = z.infer<typeof baseHero> & {
+export type Hero = z.infer<typeof _baseHero> & {
   fields: { cta?: Link | undefined };
 };
 
-export const heroSchema: z.ZodType<Hero> = baseHero.extend({
-  fields: baseHero.shape.fields.extend({
+export const heroSchema: z.ZodType<Hero> = _baseHero.extend({
+  fields: _baseHero.shape.fields.extend({
     cta: z.lazy(() => linkSchema).optional(),
   }),
 });
 
-const baseFooter = z.object({
+const _baseFooter = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -242,7 +188,7 @@ const baseFooter = z.object({
     addressPhone: z.unknown(),
     addressOrg: z.string(),
     linksTitle: z.string(),
-    linksItems: z.unknown(),
+    linksItems: z.array(z.unknown()),
     aboutTitle: z.string(),
     aboutBody: contentfulRichTextSchema,
     aboutCta: z.unknown(),
@@ -250,27 +196,25 @@ const baseFooter = z.object({
   }),
 });
 
-export type Footer = z.infer<typeof baseFooter> & {
+export type Footer = z.infer<typeof _baseFooter> & {
   fields: {
     cta: Link;
     addressEmail: Link;
     addressPhone: Link;
-    linksItems: Link[];
     aboutCta?: Link | undefined;
   };
 };
 
-export const footerSchema: z.ZodType<Footer> = baseFooter.extend({
-  fields: baseFooter.shape.fields.extend({
+export const footerSchema: z.ZodType<Footer> = _baseFooter.extend({
+  fields: _baseFooter.shape.fields.extend({
     cta: z.lazy(() => linkSchema),
     addressEmail: z.lazy(() => linkSchema),
     addressPhone: z.lazy(() => linkSchema),
-    linksItems: z.lazy(() => z.array(linkSchema)),
     aboutCta: z.lazy(() => linkSchema).optional(),
   }),
 });
 
-const baseHeader = z.object({
+const _baseHeader = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -279,23 +223,22 @@ const baseHeader = z.object({
     }),
   }),
   fields: z.object({
-    links: z.unknown(),
+    links: z.array(z.unknown()),
     cta: z.unknown(),
   }),
 });
 
-export type Header = z.infer<typeof baseHeader> & {
-  fields: { links: ShortLink[]; cta: ShortLink };
+export type Header = z.infer<typeof _baseHeader> & {
+  fields: { cta: ShortLink };
 };
 
-export const headerSchema: z.ZodType<Header> = baseHeader.extend({
-  fields: baseHeader.shape.fields.extend({
-    links: z.lazy(() => z.array(shortLinkSchema)),
+export const headerSchema: z.ZodType<Header> = _baseHeader.extend({
+  fields: _baseHeader.shape.fields.extend({
     cta: z.lazy(() => shortLinkSchema),
   }),
 });
 
-const baseMarketingBannerCard = z.object({
+const _baseMarketingBannerCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -311,19 +254,19 @@ const baseMarketingBannerCard = z.object({
   }),
 });
 
-export type MarketingBannerCard = z.infer<typeof baseMarketingBannerCard> & {
+export type MarketingBannerCard = z.infer<typeof _baseMarketingBannerCard> & {
   fields: { cta: Link; imageStack: ImageStack3 };
 };
 
 export const marketingBannerCardSchema: z.ZodType<MarketingBannerCard> =
-  baseMarketingBannerCard.extend({
-    fields: baseMarketingBannerCard.shape.fields.extend({
+  _baseMarketingBannerCard.extend({
+    fields: _baseMarketingBannerCard.shape.fields.extend({
       cta: z.lazy(() => linkSchema),
       imageStack: z.lazy(() => imageStack3Schema),
     }),
   });
 
-const baseContentCard = z.object({
+const _baseContentCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -338,19 +281,18 @@ const baseContentCard = z.object({
   }),
 });
 
-export type ContentCard = z.infer<typeof baseContentCard> & {
+export type ContentCard = z.infer<typeof _baseContentCard> & {
   fields: { cta?: Link | undefined };
 };
 
-export const contentCardSchema: z.ZodType<ContentCard> = baseContentCard.extend(
-  {
-    fields: baseContentCard.shape.fields.extend({
+export const contentCardSchema: z.ZodType<ContentCard> =
+  _baseContentCard.extend({
+    fields: _baseContentCard.shape.fields.extend({
       cta: z.lazy(() => linkSchema).optional(),
     }),
-  }
-);
+  });
 
-const baseConsultationCard = z.object({
+const _baseConsultationCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -366,19 +308,19 @@ const baseConsultationCard = z.object({
   }),
 });
 
-export type ConsultationCard = z.infer<typeof baseConsultationCard> & {
+export type ConsultationCard = z.infer<typeof _baseConsultationCard> & {
   fields: { cta?: Link | undefined; imageStack: ImageStack3 };
 };
 
 export const consultationCardSchema: z.ZodType<ConsultationCard> =
-  baseConsultationCard.extend({
-    fields: baseConsultationCard.shape.fields.extend({
+  _baseConsultationCard.extend({
+    fields: _baseConsultationCard.shape.fields.extend({
       cta: z.lazy(() => linkSchema).optional(),
       imageStack: z.lazy(() => imageStack3Schema),
     }),
   });
 
-const baseClientsCard = z.object({
+const _baseClientsCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -393,19 +335,18 @@ const baseClientsCard = z.object({
   }),
 });
 
-export type ClientsCard = z.infer<typeof baseClientsCard> & {
+export type ClientsCard = z.infer<typeof _baseClientsCard> & {
   fields: { imageStack: ImageStack5 };
 };
 
-export const clientsCardSchema: z.ZodType<ClientsCard> = baseClientsCard.extend(
-  {
-    fields: baseClientsCard.shape.fields.extend({
+export const clientsCardSchema: z.ZodType<ClientsCard> =
+  _baseClientsCard.extend({
+    fields: _baseClientsCard.shape.fields.extend({
       imageStack: z.lazy(() => imageStack5Schema),
     }),
-  }
-);
+  });
 
-const baseTeaserCard = z.object({
+const _baseTeaserCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -421,17 +362,17 @@ const baseTeaserCard = z.object({
   }),
 });
 
-export type TeaserCard = z.infer<typeof baseTeaserCard> & {
+export type TeaserCard = z.infer<typeof _baseTeaserCard> & {
   fields: { cta: Link };
 };
 
-export const teaserCardSchema: z.ZodType<TeaserCard> = baseTeaserCard.extend({
-  fields: baseTeaserCard.shape.fields.extend({
+export const teaserCardSchema: z.ZodType<TeaserCard> = _baseTeaserCard.extend({
+  fields: _baseTeaserCard.shape.fields.extend({
     cta: z.lazy(() => linkSchema),
   }),
 });
 
-const basePromotionCard = z.object({
+const _basePromotionCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -447,18 +388,18 @@ const basePromotionCard = z.object({
   }),
 });
 
-export type PromotionCard = z.infer<typeof basePromotionCard> & {
+export type PromotionCard = z.infer<typeof _basePromotionCard> & {
   fields: { cta: Link };
 };
 
 export const promotionCardSchema: z.ZodType<PromotionCard> =
-  basePromotionCard.extend({
-    fields: basePromotionCard.shape.fields.extend({
+  _basePromotionCard.extend({
+    fields: _basePromotionCard.shape.fields.extend({
       cta: z.lazy(() => linkSchema),
     }),
   });
 
-const baseContentWithImageCard = z.object({
+const _baseContentWithImageCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -474,18 +415,18 @@ const baseContentWithImageCard = z.object({
   }),
 });
 
-export type ContentWithImageCard = z.infer<typeof baseContentWithImageCard> & {
+export type ContentWithImageCard = z.infer<typeof _baseContentWithImageCard> & {
   fields: { cta: Link };
 };
 
 export const contentWithImageCardSchema: z.ZodType<ContentWithImageCard> =
-  baseContentWithImageCard.extend({
-    fields: baseContentWithImageCard.shape.fields.extend({
+  _baseContentWithImageCard.extend({
+    fields: _baseContentWithImageCard.shape.fields.extend({
       cta: z.lazy(() => linkSchema),
     }),
   });
 
-const baseImageCard = z.object({
+const _baseImageCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -498,13 +439,13 @@ const baseImageCard = z.object({
   }),
 });
 
-export type ImageCard = z.infer<typeof baseImageCard> & { fields: {} };
+export type ImageCard = z.infer<typeof _baseImageCard> & { fields: {} };
 
-export const imageCardSchema: z.ZodType<ImageCard> = baseImageCard.extend({
-  fields: baseImageCard.shape.fields.extend({}),
+export const imageCardSchema: z.ZodType<ImageCard> = _baseImageCard.extend({
+  fields: _baseImageCard.shape.fields.extend({}),
 });
 
-const baseFormCard = z.object({
+const _baseFormCard = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -519,13 +460,13 @@ const baseFormCard = z.object({
   }),
 });
 
-export type FormCard = z.infer<typeof baseFormCard> & { fields: {} };
+export type FormCard = z.infer<typeof _baseFormCard> & { fields: {} };
 
-export const formCardSchema: z.ZodType<FormCard> = baseFormCard.extend({
-  fields: baseFormCard.shape.fields.extend({}),
+export const formCardSchema: z.ZodType<FormCard> = _baseFormCard.extend({
+  fields: _baseFormCard.shape.fields.extend({}),
 });
 
-const baseBentoRow1 = z.object({
+const _baseBentoRow1 = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -539,7 +480,7 @@ const baseBentoRow1 = z.object({
   }),
 });
 
-export type BentoRow1 = z.infer<typeof baseBentoRow1> & {
+export type BentoRow1 = z.infer<typeof _baseBentoRow1> & {
   fields: {
     column1:
       | MarketingBannerCard
@@ -551,8 +492,8 @@ export type BentoRow1 = z.infer<typeof baseBentoRow1> & {
   };
 };
 
-export const bentoRow1Schema: z.ZodType<BentoRow1> = baseBentoRow1.extend({
-  fields: baseBentoRow1.shape.fields.extend({
+export const bentoRow1Schema: z.ZodType<BentoRow1> = _baseBentoRow1.extend({
+  fields: _baseBentoRow1.shape.fields.extend({
     column1: z.lazy(() =>
       z.union([
         marketingBannerCardSchema,
@@ -566,7 +507,7 @@ export const bentoRow1Schema: z.ZodType<BentoRow1> = baseBentoRow1.extend({
   }),
 });
 
-const baseBentoRow2 = z.object({
+const _baseBentoRow2 = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -580,15 +521,15 @@ const baseBentoRow2 = z.object({
   }),
 });
 
-export type BentoRow2 = z.infer<typeof baseBentoRow2> & {
+export type BentoRow2 = z.infer<typeof _baseBentoRow2> & {
   fields: {
     column1: ContentCard | ImageCard;
     column2: ContentCard | ImageCard | ContentWithImageCard;
   };
 };
 
-export const bentoRow2Schema: z.ZodType<BentoRow2> = baseBentoRow2.extend({
-  fields: baseBentoRow2.shape.fields.extend({
+export const bentoRow2Schema: z.ZodType<BentoRow2> = _baseBentoRow2.extend({
+  fields: _baseBentoRow2.shape.fields.extend({
     column1: z.lazy(() => z.union([contentCardSchema, imageCardSchema])),
     column2: z.lazy(() =>
       z.union([contentCardSchema, imageCardSchema, contentWithImageCardSchema])
@@ -596,7 +537,7 @@ export const bentoRow2Schema: z.ZodType<BentoRow2> = baseBentoRow2.extend({
   }),
 });
 
-const baseBentoRow3 = z.object({
+const _baseBentoRow3 = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -611,7 +552,7 @@ const baseBentoRow3 = z.object({
   }),
 });
 
-export type BentoRow3 = z.infer<typeof baseBentoRow3> & {
+export type BentoRow3 = z.infer<typeof _baseBentoRow3> & {
   fields: {
     column1: PromotionCard | ContentCard | ImageCard;
     column2: TeaserCard | ImageCard;
@@ -619,8 +560,8 @@ export type BentoRow3 = z.infer<typeof baseBentoRow3> & {
   };
 };
 
-export const bentoRow3Schema: z.ZodType<BentoRow3> = baseBentoRow3.extend({
-  fields: baseBentoRow3.shape.fields.extend({
+export const bentoRow3Schema: z.ZodType<BentoRow3> = _baseBentoRow3.extend({
+  fields: _baseBentoRow3.shape.fields.extend({
     column1: z.lazy(() =>
       z.union([promotionCardSchema, contentCardSchema, imageCardSchema])
     ),
@@ -629,7 +570,7 @@ export const bentoRow3Schema: z.ZodType<BentoRow3> = baseBentoRow3.extend({
   }),
 });
 
-const baseBentoRow4 = z.object({
+const _baseBentoRow4 = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -642,19 +583,19 @@ const baseBentoRow4 = z.object({
   }),
 });
 
-export type BentoRow4 = z.infer<typeof baseBentoRow4> & {
+export type BentoRow4 = z.infer<typeof _baseBentoRow4> & {
   fields: { column1: ImageCard | ConsultationCard | ClientsCard };
 };
 
-export const bentoRow4Schema: z.ZodType<BentoRow4> = baseBentoRow4.extend({
-  fields: baseBentoRow4.shape.fields.extend({
+export const bentoRow4Schema: z.ZodType<BentoRow4> = _baseBentoRow4.extend({
+  fields: _baseBentoRow4.shape.fields.extend({
     column1: z.lazy(() =>
       z.union([imageCardSchema, consultationCardSchema, clientsCardSchema])
     ),
   }),
 });
 
-const basePage = z.object({
+const _basePage = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -667,40 +608,25 @@ const basePage = z.object({
     breadcrumbLabel: z.string().optional(),
     path: z.string(),
     hero: z.unknown(),
-    content: z.unknown(),
+    content: z.array(z.unknown()),
     seo: z.unknown(),
     layout: z.unknown(),
   }),
 });
 
-export type Page = z.infer<typeof basePage> & {
-  fields: {
-    hero: Hero;
-    content: (BentoRow1 | BentoRow2 | BentoRow3 | BentoRow4)[];
-    seo?: SEO | undefined;
-    layout: Layout;
-  };
+export type Page = z.infer<typeof _basePage> & {
+  fields: { hero: Hero; seo?: SEO | undefined; layout: Layout };
 };
 
-export const pageSchema: z.ZodType<Page> = basePage.extend({
-  fields: basePage.shape.fields.extend({
+export const pageSchema: z.ZodType<Page> = _basePage.extend({
+  fields: _basePage.shape.fields.extend({
     hero: z.lazy(() => heroSchema),
-    content: z.lazy(() =>
-      z.array(
-        z.union([
-          bentoRow1Schema,
-          bentoRow2Schema,
-          bentoRow3Schema,
-          bentoRow4Schema,
-        ])
-      )
-    ),
     seo: z.lazy(() => seoSchema).optional(),
     layout: z.lazy(() => layoutSchema),
   }),
 });
 
-const baseLayout = z.object({
+const _baseLayout = z.object({
   sys: z.object({
     contentType: z.object({
       sys: z.object({
@@ -715,12 +641,12 @@ const baseLayout = z.object({
   }),
 });
 
-export type Layout = z.infer<typeof baseLayout> & {
+export type Layout = z.infer<typeof _baseLayout> & {
   fields: { header: Header; footer: Footer; seo: SEO };
 };
 
-export const layoutSchema: z.ZodType<Layout> = baseLayout.extend({
-  fields: baseLayout.shape.fields.extend({
+export const layoutSchema: z.ZodType<Layout> = _baseLayout.extend({
+  fields: _baseLayout.shape.fields.extend({
     header: z.lazy(() => headerSchema),
     footer: z.lazy(() => footerSchema),
     seo: z.lazy(() => seoSchema),
