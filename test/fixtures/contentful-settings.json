@@ -1,0 +1,27 @@
+{
+  "contentTypes": [
+    {
+      "sys": {
+        "id": "settings",
+        "type": "ContentType"
+      },
+      "displayField": "name",
+      "name": "Settings",
+      "description": "Global settings and configuration",
+      "fields": [
+        {
+          "id": "name",
+          "name": "Name",
+          "type": "Symbol",
+          "required": true
+        },
+        {
+          "id": "configuration",
+          "name": "Configuration",
+          "type": "Object",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

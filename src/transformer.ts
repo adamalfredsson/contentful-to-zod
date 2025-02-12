@@ -96,6 +96,7 @@ function getZodSchemaForFieldType({
 
   switch (type) {
     case "Symbol":
+    case "Object":
     case "Text": {
       schema = z.string();
       break;

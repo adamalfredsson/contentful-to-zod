@@ -1,54 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`contentful-to-zod > should parse expected output 1`] = `
-[
-  {
-    "fields": {
-      "breadcrumbLabel": "Hem",
-      "breadcrumbs": false,
-      "content": [
-        {
-          "sys": {
-            "contentType": {
-              "sys": {
-                "id": "bentoRow1",
-              },
-            },
-          },
-        },
-      ],
-      "hero": {
-        "sys": {
-          "contentType": {
-            "sys": {
-              "id": "hero",
-            },
-          },
-        },
-      },
-      "layout": {
-        "sys": {
-          "contentType": {
-            "sys": {
-              "id": "layout",
-            },
-          },
-        },
-      },
-      "path": "/",
-    },
-    "sys": {
-      "contentType": {
-        "sys": {
-          "id": "page",
-        },
-      },
-    },
-  },
-]
-`;
-
-exports[`contentful-to-zod > should print expected output 1`] = `
+exports[`contentful-to-zod > should generate schema for 'contentful' 1`] = `
 "import { z } from "zod";
 import type { Document } from '@contentful/rich-text-types';
 
@@ -652,4 +604,80 @@ footer: z.lazy(() => footerSchema),
 seo: z.lazy(() => seoSchema)
           })
         });"
+`;
+
+exports[`contentful-to-zod > should generate schema for 'contentful-settings' 1`] = `
+"import { z } from "zod";
+
+
+
+const _baseSettings = z.object({
+    sys: z.object({
+    contentType: z.object({
+    sys: z.object({
+    id: z.literal("settings")
+  })
+  })
+  }),
+    fields: z.object({
+    name: z.string(),
+    configuration: z.string()
+  })
+  });
+
+export type Settings = z.infer<typeof _baseSettings> & { fields: {} };
+
+export const settingsSchema: z.ZodType<Settings> = _baseSettings.extend({
+          fields: _baseSettings.shape.fields.extend({
+            
+          })
+        });"
+`;
+
+exports[`contentful-to-zod > should parse expected output 1`] = `
+[
+  {
+    "fields": {
+      "breadcrumbLabel": "Hem",
+      "breadcrumbs": false,
+      "content": [
+        {
+          "sys": {
+            "contentType": {
+              "sys": {
+                "id": "bentoRow1",
+              },
+            },
+          },
+        },
+      ],
+      "hero": {
+        "sys": {
+          "contentType": {
+            "sys": {
+              "id": "hero",
+            },
+          },
+        },
+      },
+      "layout": {
+        "sys": {
+          "contentType": {
+            "sys": {
+              "id": "layout",
+            },
+          },
+        },
+      },
+      "path": "/",
+    },
+    "sys": {
+      "contentType": {
+        "sys": {
+          "id": "page",
+        },
+      },
+    },
+  },
+]
 `;
