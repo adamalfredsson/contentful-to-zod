@@ -29,7 +29,8 @@
     "start": "node dist/cli.js",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "get-data": "dotenv tsx scripts/get-data.ts"
   },
   "keywords": [
     "contentful",
@@ -47,6 +48,8 @@
   "devDependencies": {
     "@contentful/rich-text-types": "^17.0.0",
     "@types/node": "^22.10.1",
+    "contentful": "^10.0.0",
+    "dotenv-cli": "^8.0.0",
     "prettier": "^3.4.2",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
