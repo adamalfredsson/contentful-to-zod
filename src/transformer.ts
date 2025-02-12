@@ -96,7 +96,6 @@ function getZodSchemaForFieldType({
 
   switch (type) {
     case "Symbol":
-    case "Object":
     case "Text": {
       schema = z.string();
       break;
@@ -154,6 +153,10 @@ function getZodSchemaForFieldType({
         break;
       }
       schema = createSchemaReferences(contentTypes, true);
+      break;
+    }
+    case "Object": {
+      schema = z.unknown();
       break;
     }
     default: {

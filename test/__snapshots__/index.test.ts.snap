@@ -621,7 +621,7 @@ const _baseSettings = z.object({
   }),
     fields: z.object({
     name: z.string(),
-    configuration: z.string()
+    configuration: z.unknown()
   })
   });
 
