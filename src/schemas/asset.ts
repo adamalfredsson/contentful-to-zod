@@ -18,7 +18,7 @@ const _assetSchema = z.object({
   }),
   fields: z.object({
     title: z.string(),
-    description: z.string(),
+    description: z.string().optional(),
     file: fileSchema,
   }),
 });

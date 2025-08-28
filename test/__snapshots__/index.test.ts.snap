@@ -10,7 +10,7 @@ export const contentfulImageSchema = z.object({
   }),
     fields: z.object({
     title: z.string(),
-    description: z.string(),
+    description: z.string().optional(),
     file: z.object({
     url: z.string(),
     details: z.object({
