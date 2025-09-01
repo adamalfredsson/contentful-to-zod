@@ -451,7 +451,7 @@
           "name": "Image",
           "type": "Link",
           "localized": false,
-          "required": true,
+          "required": false,
           "validations": [
             {
               "linkMimetypeGroup": ["image"]
