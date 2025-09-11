@@ -6,6 +6,7 @@ import { richTextSchema } from "./schemas/rich-text.js";
 import { PrintConfig } from "./types.js";
 import { unique } from "./utils/array.js";
 import { toPascalCase } from "./utils/string.js";
+import { isZodOptionalSchema } from "./utils/zod.js";
 
 /**
  * Converts a Zod schema to its string representation for code generation
@@ -23,7 +24,13 @@ function zodToString(schema: unknown, config: ResolvedGeneratorConfig): string {
   }
 
   if (!config.flat && isZodSchemaWithInternalReference(schema)) {
-    return config.toSchemaName(schema._reference);
+    const reference = config.toSchemaName(schema._reference)
+
+    if (isZodOptionalSchema(schema)) {
+      return `${reference}.optional()`;
+    }
+
+    return reference;
   }
 
   if (!config.flat && isZodSchemaWithReferences(schema)) {
@@ -253,17 +260,16 @@ export function printTypescriptSchemas(
         )}> = ${toBaseSchemaName(name)}.extend({
           fields: ${toBaseSchemaName(name)}.shape.fields.extend({
             ${[...fieldReferences.entries()]
-              .map(
-                ([field, reference]) =>
-                  `${field}: z.lazy(() => ${reference.multiple ? "z.array(" : ""}${
-                    reference.types.length === 1
-                      ? resolvedConfig.toSchemaName(reference.types[0])
-                      : `z.union([${reference.types
-                          .map(resolvedConfig.toSchemaName)
-                          .join(", ")}])`
-                  }${reference.multiple ? ")" : ""})${reference.optional ? ".optional()" : ""}`
-              )
-              .join(",\n")}
+          .map(
+            ([field, reference]) =>
+              `${field}: z.lazy(() => ${reference.multiple ? "z.array(" : ""}${reference.types.length === 1
+                ? resolvedConfig.toSchemaName(reference.types[0])
+                : `z.union([${reference.types
+                  .map(resolvedConfig.toSchemaName)
+                  .join(", ")}])`
+              }${reference.multiple ? ")" : ""})${reference.optional ? ".optional()" : ""}`
+          )
+          .join(",\n")}
           })
         });`,
       ].join("\n\n");
