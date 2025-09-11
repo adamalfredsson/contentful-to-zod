@@ -32,7 +32,7 @@ contentful space export \
   --space-id <SPACE_ID> \
   --management-token <MANAGEMENT_TOKEN> \
   --content-file ./contentful.json \
-  --content-model-only=true
+  --skip-content
 ```
 
 ### ⚡️ Generate Schemas
