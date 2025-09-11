@@ -134,7 +134,7 @@ const _baseSEO = z.object({
     fields: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
-    image: contentfulImageSchema
+    image: contentfulImageSchema.optional()
   })
   });
 
