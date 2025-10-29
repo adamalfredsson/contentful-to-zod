@@ -437,7 +437,7 @@ const _baseFormCard = z.object({
     fields: z.object({
     title: z.string(),
     body: contentfulRichTextSchema,
-    form: z.string()
+    form: z.enum(["contact","influencer-collaboration","influencer-signup","panel-feedback","panel-signup","brand-request","optimization-request"])
   })
   });
 
