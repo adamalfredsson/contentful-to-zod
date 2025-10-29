@@ -105,6 +105,10 @@ function zodToString(schema: unknown, config: ResolvedGeneratorConfig): string {
         .join(", ")}])`;
       break;
 
+    case "ZodEnum":
+      result = `z.enum(${JSON.stringify(schema._def.values)})`;
+      break;
+
     default:
       if (config.abortOnUnknown) {
         throw new Error(`Unsupported Zod type: ${schema._def.typeName}`);

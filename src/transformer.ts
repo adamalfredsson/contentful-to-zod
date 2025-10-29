@@ -97,7 +97,13 @@ function getZodSchemaForFieldType({
   switch (type) {
     case "Symbol":
     case "Text": {
-      schema = z.string();
+      for (const validation of field.validations ?? []) {
+        if (validation.in) {
+          schema = z.enum(validation.in);
+          break;
+        }
+      }
+      schema ??= z.string();
       break;
     }
     case "Integer":
