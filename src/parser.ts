@@ -227,13 +227,23 @@ export function printTypescriptSchemas(
             ? value._references
             : [];
           if (references.length > 0) {
+            const isOptional = "typeName" in value._def && value._def.typeName === "ZodOptional";
+            let isMultiple = "typeName" in value._def && value._def.typeName === "ZodArray";
+
+            /**
+             * Optional arrays have structure: ZodOptional<ZodArray<T>>
+             * Check ZodOptional's inner type to detect arrays when required=false
+             * (e.g., Contentful Array fields with required: false)
+             */
+            if (isOptional) {
+              const innerType = value._def.innerType;
+              isMultiple = "typeName" in innerType._def && innerType._def.typeName === "ZodArray";
+            }
+
             acc.set(field, {
               types: references,
-              multiple:
-                "typeName" in value._def && value._def.typeName === "ZodArray",
-              optional:
-                "typeName" in value._def &&
-                value._def.typeName === "ZodOptional",
+              multiple: isMultiple,
+              optional: isOptional,
             });
           }
           return acc;

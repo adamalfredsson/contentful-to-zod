@@ -575,6 +575,25 @@
           "disabled": false,
           "omitted": false,
           "linkType": "Entry"
+        },
+        {
+          "id": "relatedLinks",
+          "name": "Related Links",
+          "type": "Array",
+          "localized": false,
+          "required": false,
+          "validations": [],
+          "disabled": false,
+          "omitted": false,
+          "items": {
+            "type": "Link",
+            "validations": [
+              {
+                "linkContentType": ["link"]
+              }
+            ],
+            "linkType": "Entry"
+          }
         }
       ]
     },
