@@ -157,15 +157,18 @@ const _baseHero = z.object({
     fields: z.object({
     title: z.string(),
     body: contentfulRichTextSchema,
-    cta: z.unknown()
+    cta: z.unknown(),
+    relatedLinks: z.unknown()
   })
   });
 
-export type Hero = z.infer<typeof _baseHero> & { fields: {cta?: (Link | undefined)} };
+export type Hero = z.infer<typeof _baseHero> & { fields: {cta?: (Link | undefined),
+relatedLinks?: (Link | undefined)[]} };
 
 export const heroSchema: z.ZodType<Hero> = _baseHero.extend({
           fields: _baseHero.shape.fields.extend({
-            cta: z.lazy(() => linkSchema).optional()
+            cta: z.lazy(() => linkSchema).optional(),
+relatedLinks: z.lazy(() => z.array(linkSchema)).optional()
           })
         });
 
