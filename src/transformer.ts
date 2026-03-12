@@ -116,7 +116,7 @@ function getZodSchemaForFieldType({
       break;
     }
     case "Date": {
-      schema = z.string().datetime();
+      schema = z.string().datetime({ offset: true });
       break;
     }
     case "RichText": {

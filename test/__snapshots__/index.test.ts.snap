@@ -624,7 +624,9 @@ const _baseSettings = z.object({
   }),
     fields: z.object({
     name: z.string(),
-    configuration: z.unknown()
+    configuration: z.unknown(),
+    startDate: z.string().datetime({ offset: true }),
+    endDate: z.string().datetime({ offset: true }).optional()
   })
   });
 

@@ -63,12 +63,15 @@ function zodToString(schema: unknown, config: ResolvedGeneratorConfig): string {
 
     case "ZodString":
       result = "z.string()";
-      if (
-        schema._def.checks?.some(
-          (check: z.ZodStringCheck) => check.kind === "datetime"
-        )
-      ) {
-        result += ".datetime()";
+      const datetimeCheck = schema._def.checks?.find(
+        (check: z.ZodStringCheck) => check.kind === "datetime"
+      );
+      if (datetimeCheck) {
+        if (datetimeCheck.offset) {
+          result += ".datetime({ offset: true })";
+        } else {
+          result += ".datetime()";
+        }
       }
       break;
 

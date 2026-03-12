@@ -20,6 +20,18 @@
           "name": "Configuration",
           "type": "Object",
           "required": true
+        },
+        {
+          "id": "startDate",
+          "name": "Start Date",
+          "type": "Date",
+          "required": true
+        },
+        {
+          "id": "endDate",
+          "name": "End Date",
+          "type": "Date",
+          "required": false
         }
       ]
     }
