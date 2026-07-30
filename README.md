@@ -14,6 +14,9 @@ By validating our contentful data with zod, we can catch any unhandled schema ch
 
 ### 📦 Install
 
+Version compatibility: `contentful-to-zod` versions `<=4` generate schemas for
+Zod 3, while versions `>=5` generate schemas for Zod 4.
+
 ```bash
 # npm
 npm install -D contentful-to-zod

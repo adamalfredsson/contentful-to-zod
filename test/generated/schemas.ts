@@ -40,7 +40,7 @@ const _baseLink = z.object({
   fields: z.object({
     label: z.string(),
     href: z.string().optional(),
-    page: z.unknown(),
+    page: z.unknown().optional(),
   }),
 });
 
@@ -66,7 +66,7 @@ const _baseShortLink = z.object({
     label: z.string(),
     short: z.string().optional(),
     href: z.string().optional(),
-    page: z.unknown(),
+    page: z.unknown().optional(),
   }),
 });
 
@@ -154,7 +154,7 @@ const _baseHero = z.object({
   fields: z.object({
     title: z.string(),
     body: contentfulRichTextSchema,
-    cta: z.unknown(),
+    cta: z.unknown().optional(),
   }),
 });
 
@@ -189,7 +189,7 @@ const _baseFooter = z.object({
     linksItems: z.unknown(),
     aboutTitle: z.string(),
     aboutBody: contentfulRichTextSchema,
-    aboutCta: z.unknown(),
+    aboutCta: z.unknown().optional(),
     copyright: z.string(),
   }),
 });
@@ -278,7 +278,7 @@ const _baseContentCard = z.object({
   fields: z.object({
     title: z.string(),
     body: contentfulRichTextSchema,
-    cta: z.unknown(),
+    cta: z.unknown().optional(),
   }),
 });
 
@@ -304,7 +304,7 @@ const _baseConsultationCard = z.object({
   fields: z.object({
     title: z.string(),
     body: contentfulRichTextSchema,
-    cta: z.unknown(),
+    cta: z.unknown().optional(),
     imageStack: z.unknown(),
   }),
 });
@@ -610,7 +610,7 @@ const _basePage = z.object({
     path: z.string(),
     hero: z.unknown(),
     content: z.unknown(),
-    seo: z.unknown(),
+    seo: z.unknown().optional(),
     layout: z.unknown(),
   }),
 });

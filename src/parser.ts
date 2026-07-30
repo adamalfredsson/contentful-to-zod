@@ -24,7 +24,7 @@ function zodToString(schema: unknown, config: ResolvedGeneratorConfig): string {
   }
 
   if (!config.flat && isZodSchemaWithInternalReference(schema)) {
-    const reference = config.toSchemaName(schema._reference)
+    const reference = config.toSchemaName(schema._reference);
 
     if (isZodOptionalSchema(schema)) {
       return `${reference}.optional()`;
@@ -34,93 +34,80 @@ function zodToString(schema: unknown, config: ResolvedGeneratorConfig): string {
   }
 
   if (!config.flat && isZodSchemaWithReferences(schema)) {
+    return isZodOptionalSchema(schema)
+      ? "z.unknown().optional()"
+      : "z.unknown()";
+  }
+
+  if (schema instanceof z.ZodObject) {
+    const fields = Object.entries(schema.shape)
+      .map(([key, value]) => {
+        return `    ${key}: ${zodToString(value, config)}`;
+      })
+      .join(",\n");
+    const objectFactory = config.passthrough ? "z.looseObject" : "z.object";
+    return `${objectFactory}({\n${fields}\n  })`;
+  }
+
+  if (schema instanceof z.ZodArray) {
+    return `z.array(${zodToString(schema.element, config)})`;
+  }
+
+  if (schema instanceof z.ZodOptional) {
+    return `${zodToString(schema.unwrap(), config)}.optional()`;
+  }
+
+  if (schema instanceof z.ZodISODateTime) {
+    return schema._zod.def.offset
+      ? "z.iso.datetime({ offset: true })"
+      : "z.iso.datetime()";
+  }
+
+  if (schema instanceof z.ZodString) {
+    return "z.string()";
+  }
+
+  if (schema instanceof z.ZodNumber) {
+    return schema.isInt ? "z.int()" : "z.number()";
+  }
+
+  if (schema instanceof z.ZodBoolean) {
+    return "z.boolean()";
+  }
+
+  if (schema instanceof z.ZodLiteral) {
+    const values = [...schema.values];
+    return `z.literal(${JSON.stringify(
+      values.length === 1 ? values[0] : values
+    )})`;
+  }
+
+  if (schema instanceof z.ZodRecord) {
+    return `z.record(${zodToString(schema.keyType, config)}, ${zodToString(
+      schema.valueType,
+      config
+    )})`;
+  }
+
+  if (schema instanceof z.ZodUnknown) {
     return "z.unknown()";
   }
 
-  let result = "";
-  switch (schema._def.typeName) {
-    case "ZodObject": {
-      const shape = schema._def.shape();
-      const fields = Object.entries(shape)
-        .map(([key, value]) => {
-          return `    ${key}: ${zodToString(value, config)}`;
-        })
-        .join(",\n");
-      result = `z.object({\n${fields}\n  })`;
-      if (config.passthrough) {
-        result += ".passthrough()";
-      }
-      break;
-    }
-
-    case "ZodArray":
-      result = `z.array(${zodToString(schema._def.type, config)})`;
-      break;
-
-    case "ZodOptional":
-      result = `${zodToString(schema._def.innerType, config)}.optional()`;
-      break;
-
-    case "ZodString":
-      result = "z.string()";
-      const datetimeCheck = schema._def.checks?.find(
-        (check: z.ZodStringCheck) => check.kind === "datetime"
-      );
-      if (datetimeCheck) {
-        if (datetimeCheck.offset) {
-          result += ".datetime({ offset: true })";
-        } else {
-          result += ".datetime()";
-        }
-      }
-      break;
-
-    case "ZodNumber":
-      result = "z.number()";
-      if (
-        schema._def.checks?.some(
-          (check: z.ZodNumberCheck) => check.kind === "int"
-        )
-      ) {
-        result += ".int()";
-      }
-      break;
-
-    case "ZodBoolean":
-      result = "z.boolean()";
-      break;
-
-    case "ZodLiteral":
-      result = `z.literal(${JSON.stringify(schema._def.value)})`;
-      break;
-
-    case "ZodRecord":
-      result = `z.record(${zodToString(schema._def.valueType, config)})`;
-      break;
-
-    case "ZodUnknown":
-      result = "z.unknown()";
-      break;
-
-    case "ZodUnion":
-      result = `z.union([${schema._def.options
-        .map((option: z.ZodType) => zodToString(option, config))
-        .join(", ")}])`;
-      break;
-
-    case "ZodEnum":
-      result = `z.enum(${JSON.stringify(schema._def.values)})`;
-      break;
-
-    default:
-      if (config.abortOnUnknown) {
-        throw new Error(`Unsupported Zod type: ${schema._def.typeName}`);
-      }
-      console.error(`Unsupported Zod type: ${schema._def.typeName}`);
-      return "z.unknown()";
+  if (schema instanceof z.ZodUnion) {
+    return `z.union([${schema.options
+      .map((option) => zodToString(option, config))
+      .join(", ")}])`;
   }
 
-  return result;
+  if (schema instanceof z.ZodEnum) {
+    return `z.enum(${JSON.stringify(schema.options)})`;
+  }
+
+  if (config.abortOnUnknown) {
+    throw new Error(`Unsupported Zod type: ${schema.type}`);
+  }
+  console.error(`Unsupported Zod type: ${schema.type}`);
+  return "z.unknown()";
 }
 
 function findInternalReferences(schema: unknown): string[] {
@@ -132,23 +119,23 @@ function findInternalReferences(schema: unknown): string[] {
     return [schema._reference];
   }
 
-  switch (schema._def.typeName) {
-    case "ZodObject": {
-      return Object.values(schema._def.shape()).flatMap(findInternalReferences);
-    }
-
-    case "ZodArray":
-      return findInternalReferences(schema._def.type);
-
-    case "ZodOptional":
-      return findInternalReferences(schema._def.innerType);
-
-    case "ZodUnion":
-      return schema._def.options.flatMap(findInternalReferences);
-
-    default:
-      return [];
+  if (schema instanceof z.ZodObject) {
+    return Object.values(schema.shape).flatMap(findInternalReferences);
   }
+
+  if (schema instanceof z.ZodArray) {
+    return findInternalReferences(schema.element);
+  }
+
+  if (schema instanceof z.ZodOptional) {
+    return findInternalReferences(schema.unwrap());
+  }
+
+  if (schema instanceof z.ZodUnion) {
+    return schema.options.flatMap(findInternalReferences);
+  }
+
+  return [];
 }
 
 /**
@@ -226,23 +213,20 @@ export function printTypescriptSchemas(
     .map(([name, schema]) => {
       const fieldReferences = Object.entries(schema.shape.fields.shape).reduce(
         (acc, [field, value]) => {
-          const references = isZodSchemaWithReferences(value)
-            ? value._references
+          const zodValue = value as z.ZodType;
+          const references = isZodSchemaWithReferences(zodValue)
+            ? zodValue._references
             : [];
           if (references.length > 0) {
-            const isOptional = "typeName" in value._def && value._def.typeName === "ZodOptional";
-            let isMultiple = "typeName" in value._def && value._def.typeName === "ZodArray";
+            const isOptional = zodValue instanceof z.ZodOptional;
+            const innerType = isOptional ? zodValue.unwrap() : zodValue;
+            const isMultiple = innerType instanceof z.ZodArray;
 
             /**
              * Optional arrays have structure: ZodOptional<ZodArray<T>>
              * Check ZodOptional's inner type to detect arrays when required=false
              * (e.g., Contentful Array fields with required: false)
              */
-            if (isOptional) {
-              const innerType = value._def.innerType;
-              isMultiple = "typeName" in innerType._def && innerType._def.typeName === "ZodArray";
-            }
-
             acc.set(field, {
               types: references,
               multiple: isMultiple,
