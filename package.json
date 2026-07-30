@@ -1,6 +1,6 @@
 {
   "name": "contentful-to-zod",
-  "version": "4.9.1",
+  "version": "5.0.0",
   "description": "Generate Zod schemas from Contentful content types",
   "repository": {
     "type": "git",
@@ -43,7 +43,7 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^12.1.0",
-    "zod": "^3.23.8"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@contentful/rich-text-types": "^17.0.0",

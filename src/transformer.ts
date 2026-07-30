@@ -108,7 +108,7 @@ function getZodSchemaForFieldType({
     }
     case "Integer":
     case "Number": {
-      schema = z.number().int();
+      schema = z.int();
       break;
     }
     case "Boolean": {
@@ -116,7 +116,7 @@ function getZodSchemaForFieldType({
       break;
     }
     case "Date": {
-      schema = z.string().datetime({ offset: true });
+      schema = z.iso.datetime({ offset: true });
       break;
     }
     case "RichText": {
